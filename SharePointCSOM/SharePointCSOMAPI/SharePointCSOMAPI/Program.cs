@@ -1,4 +1,5 @@
 ﻿using Microsoft.SharePoint.Client;
+using SharePointCSOMAPI.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,45 +12,14 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ClientContext context = null;
+        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
+        private static string userName = "aosiptest@longgod.onmicrosoft.com";
+        private static string password = "demo12!@";
         static void Main(string[] args)
         {
+            MetadataService.Test1(Authentication.GetClientContext(siteUrl, userName, password));
+            WebLevel.GetAllListsInWeb(Authentication.GetClientContext(siteUrl, userName,password));
         }
 
-        private static SecureString GetPassword(string password)
-        {
-            SecureString pwd = new SecureString();
-            foreach (char c in password)
-            {
-                pwd.AppendChar(c);
-            }
-            return pwd;
-        }
-
-        private static ClientContext Context
-        {
-            get
-            {
-                if (context == null)
-                {
-                    string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
-                    string userName = "aosiptest@longgod.onmicrosoft.com";
-                    string password = "demo12!@";
-                    context = new ClientContext(siteUrl);
-                    context.Credentials = new SharePointOnlineCredentials(userName, GetPassword(password));
-                    context.ExecuteQuery();
-                }
-
-                //if (context == null)
-                //{
-                //    string siteUrl = "https://tingtest123.sharepoint.com/sites/Shen01";
-                //    string userName = "TingTing@TingTest123.onmicrosoft.com";
-                //    string password = "1qaz2wsx!@";
-                //    context = new ClientContext(siteUrl);
-                //    context.Credentials = new SharePointOnlineCredentials(userName, GetPassword(password));
-                //    context.ExecuteQuery();
-                //}
-                return context;
-            }
-        }
     }
 }
