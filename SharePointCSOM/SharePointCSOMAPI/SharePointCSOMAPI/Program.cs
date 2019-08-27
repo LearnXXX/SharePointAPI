@@ -1,8 +1,10 @@
-﻿using Microsoft.SharePoint.Client;
+﻿using log4net;
+using Microsoft.SharePoint.Client;
 using SharePointCSOMAPI.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,96 +13,38 @@ namespace SharePointCSOMAPI
 {
     class Program
     {
-        private static ClientContext context = null;
+        private static ILog logger = LogManager.GetLogger(typeof(Program));
         //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         private static string userName = "aosiptest@longgod.onmicrosoft.com";
         private static string password = "demo12!@";
+        private static TokenHelper tokenHelper = new TokenHelper();
+
         static void Main(string[] args)
         {
-            SiteLevel.GetSiteSize(Authentication.GetClientContext(siteUrl, userName, password));
-            UserLevel.GetUserByLoginName(Authentication.GetClientContext(siteUrl, userName, password));
-            MetadataService.Test1(Authentication.GetClientContext(siteUrl, userName, password));
-            WebLevel.GetAllListsInWeb(Authentication.GetClientContext(siteUrl, userName, password));
+            Initalize();
+
+
+            SiteLevel.GetSiteSize(tokenHelper.GetClientContextForAppToken(siteUrl));
+            SiteLevel.GetSiteSize(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            UserLevel.GetUserByLoginName(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            MetadataService.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            WebLevel.GetAllListsInWeb(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
         }
 
-        private static void UpdateListsViews(ClientContext context)
+        private static void Initalize()
         {
-            using (var reader = new System.IO.StreamReader(""))
+            if (Configuration.Config.EnableProxy)
             {
-                Web web = null;
-                List list = null;
-
-                while (reader.EndOfStream)
-                {
-                    try
-                    {
-                        var line = reader.ReadLine();
-                        var data = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (web == null || string.Equals(web.ServerRelativeUrl, data[0], StringComparison.OrdinalIgnoreCase))
-                        {
-                            web = context.Site.OpenWeb(data[0]);
-                            context.Load(web, w => w.ServerRelativeUrl);
-                        }
-                        if (list == null || !string.Equals(list.RootFolder.ServerRelativeUrl, data[1], StringComparison.OrdinalIgnoreCase))
-                        {
-                            list = web.GetList(data[1]);
-                            context.Load(list.Views);
-                            context.Load(list.RootFolder, f => f.ServerRelativeUrl);
-                            context.ExecuteQuery();
-                        }
-                        foreach (var view in list.Views)
-                        {
-                            try
-                            {
-                                if (string.IsNullOrEmpty(data[2]))
-                                {
-                                    continue;
-                                }
-                                if (string.Equals(view.Title, data[2], StringComparison.OrdinalIgnoreCase))
-                                {
-                                    var dataChanged = false;
-                                    var hidden = Convert.ToBoolean(data[3]);
-                                    var mobileView = Convert.ToBoolean(data[4]);
-                                    var mobileDefaultView = Convert.ToBoolean(data[5]);
-                                    if (view.Hidden != hidden)
-                                    {
-                                        view.Hidden = hidden;
-                                        dataChanged = true;
-                                    }
-
-                                    if (view.MobileView != mobileView)
-                                    {
-                                        view.MobileView = mobileView;
-                                        dataChanged = true;
-                                    }
-
-                                    if (view.MobileDefaultView != mobileDefaultView)
-                                    {
-                                        view.MobileDefaultView = mobileDefaultView;
-                                        dataChanged = true;
-                                    }
-                                    if (dataChanged)
-                                    {
-                                        view.Update();
-                                        context.ExecuteQuery();
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Error1: {0}", e.ToString());
-                            }
-                            Console.WriteLine("Finsih view:{0},list url: {1}", view.Title, list.RootFolder.ServerRelativeUrl);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Error2: {0}", e.ToString());
-                    }
-                }
+                logger.InfoFormat("Use proxy with {0}", Configuration.Config.Proxy.Address);
+                WebRequest.DefaultWebProxy = new System.Net.WebProxy(Configuration.Config.Proxy.Address) { Credentials = new NetworkCredential(Configuration.Config.Proxy.Username, Configuration.Config.Proxy.Password) };
             }
-
+            else
+            {
+                logger.InfoFormat("Use system default proxy");
+                WebRequest.DefaultWebProxy = WebRequest.GetSystemWebProxy();
+            }
         }
+
     }
 }

@@ -14,10 +14,10 @@ namespace SharePointCSOMAPI.Tools
             StringBuilder ExistFiles = new StringBuilder();
             StringBuilder NoneFiles = new StringBuilder();
             StringBuilder FailedFiles = new StringBuilder();
-
+            TokenHelper tokenHelper = new SharePointCSOMAPI.TokenHelper();
             var sourceHostName = "http://companyweb";
             var DestinationHostName = "https://kieferusa.sharepoint.com";
-            var context = Authentication.GetClientContext("https://kieferusa.sharepoint.com", "avepoint@kieferusa.onmicrosoft.com", "Av3P0int!!");
+            var context = tokenHelper.GetClientContextForServiceAccount("https://kieferusa.sharepoint.com", "avepoint@kieferusa.onmicrosoft.com", "Av3P0int!!");
             using (var reader = new StreamReader(@"C:\Users\xluo\Desktop\Report\Failed.csv"))
             {
                 int finishFileCount = 0;
