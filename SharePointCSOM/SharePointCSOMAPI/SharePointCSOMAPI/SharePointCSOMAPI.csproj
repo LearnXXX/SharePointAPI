@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=2.6.0.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.6.0\lib\net45\CommandLine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.12.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.12\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -122,13 +126,16 @@
     <Compile Include="Authentication\TokenHelper.cs" />
     <Compile Include="Authentication\TokenProvider.cs" />
     <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Options.cs" />
     <Compile Include="Config\ProxyInfo.cs" />
     <Compile Include="DocumentLevel.cs" />
     <Compile Include="FolderLevel.cs" />
     <Compile Include="MetadataService.cs" />
+    <Compile Include="Navigation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteLevel.cs" />
+    <Compile Include="Tools\ScanSubSiteDocumentLibrary.cs" />
     <Compile Include="Tools\UpdateListsViews.cs" />
     <Compile Include="UserLevel.cs" />
     <Compile Include="Tools\CheckFilesExit.cs" />

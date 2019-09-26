@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using CommandLine;
+using HtmlAgilityPack;
 using log4net;
 using Microsoft.SharePoint.Client;
 using SharePointCSOMAPI.Tools;
@@ -16,7 +17,7 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
+        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest3";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         private static string userName = "aosiptest@longgod.onmicrosoft.com";
         private static string password = "demo12!@";
@@ -24,17 +25,40 @@ namespace SharePointCSOMAPI
 
         static void Main(string[] args)
         {
-            Initalize();
-            FolderLevel.FolderTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            HtmlTest();
-            var text = System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\111.txt");
-            var result = System.Web.HttpUtility.HtmlDecode(text);
+            try
+            {
 
-            SiteLevel.GetSiteSize(tokenHelper.GetClientContextForAppToken(siteUrl));
-            SiteLevel.GetSiteSize(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            UserLevel.GetUserByLoginName(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            MetadataService.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            WebLevel.GetAllListsInWeb(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                Initalize();
+
+                if (args.Length == 0)
+                {
+                    ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //FolderLevel.FolderTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //HtmlTest();
+                    //var text = System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\111.txt");
+                    //var result = System.Web.HttpUtility.HtmlDecode(text);
+
+                    //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForAppToken(siteUrl));
+                    //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //UserLevel.GetUserByLoginName(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //MetadataService.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                    //WebLevel.GetAllListsInWeb(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                }
+                else
+                {
+
+                    Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
+                    {
+                        ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl,o.UserName,o.Password));
+                    });
+
+                }
+            }
+            catch (Exception e)
+            {
+                logger.ErrorFormat("An error occurred: {0}",e);
+            }
         }
         private static void HtmlTest()
         {
