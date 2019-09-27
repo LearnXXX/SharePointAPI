@@ -17,7 +17,7 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest3";
+        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         private static string userName = "aosiptest@longgod.onmicrosoft.com";
         private static string password = "demo12!@";
@@ -30,6 +30,8 @@ namespace SharePointCSOMAPI
 
                 Initalize();
 
+                //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+                //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
                 if (args.Length == 0)
                 {
                     ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
@@ -50,15 +52,19 @@ namespace SharePointCSOMAPI
 
                     Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
                     {
-                        ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl,o.UserName,o.Password));
+                        //UpdateFileDateTimeColumnValue.Run(o);
+                        //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
+                        ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
                     });
 
                 }
             }
             catch (Exception e)
             {
-                logger.ErrorFormat("An error occurred: {0}",e);
+                logger.ErrorFormat("An error occurred: {0}", e);
             }
+            logger.Info("Press any key to esc...");
+            Console.ReadKey();
         }
         private static void HtmlTest()
         {
