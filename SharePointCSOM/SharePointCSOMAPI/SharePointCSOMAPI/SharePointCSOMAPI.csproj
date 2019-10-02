@@ -143,6 +143,7 @@
     <Compile Include="Tools\UpdateListsViews.cs" />
     <Compile Include="UserLevel.cs" />
     <Compile Include="Tools\CheckFilesExit.cs" />
+    <Compile Include="Utility\LargeListQueryWorker.cs" />
     <Compile Include="Utility\SerializerHelper.cs" />
     <Compile Include="WebLevel.cs" />
   </ItemGroup>

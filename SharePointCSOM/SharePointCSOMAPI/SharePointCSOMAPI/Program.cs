@@ -52,9 +52,10 @@ namespace SharePointCSOMAPI
 
                     Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
                     {
-                        //UpdateFileDateTimeColumnValue.Run(o);
+                        //UpdateFileDateTimeColumnValue.RunForLargeList(o);
+                        UpdateFileDateTimeColumnValue.Run(o);
                         //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
-                        ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
+                        //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
                     });
 
                 }
