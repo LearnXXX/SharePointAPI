@@ -30,6 +30,7 @@ namespace SharePointCSOMAPI
 
                 Initalize();
 
+                //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
                 //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
                 //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
                 if (args.Length == 0)

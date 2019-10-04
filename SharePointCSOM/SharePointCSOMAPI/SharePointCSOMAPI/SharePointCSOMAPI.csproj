@@ -129,6 +129,7 @@
     <Compile Include="Config\Options.cs" />
     <Compile Include="Config\ProxyInfo.cs" />
     <Compile Include="DocumentLevel.cs" />
+    <Compile Include="FileLevel.cs" />
     <Compile Include="FolderLevel.cs" />
     <Compile Include="MetadataService.cs" />
     <Compile Include="Navigation.cs" />
