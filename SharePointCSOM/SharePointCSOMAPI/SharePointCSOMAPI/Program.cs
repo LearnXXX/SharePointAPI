@@ -17,17 +17,55 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
+        private static string siteUrl = "https://wrapper.sharepoint.com/sites/joey";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
+        //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
-        private static string userName = "aosiptest@longgod.onmicrosoft.com";
-        private static string password = "demo12!@";
+        //private static string userName = "aosiptest@longgod.onmicrosoft.com";
+        //private static string password = "demo12!@";
+        //private static string userName = "xluo@xluov.onmicrosoft.com";
+        //private static string password = "demo0-)_";
+        private static string userName = "yczhou@wrapper.onmicrosoft.com";
+        private static string password = "demo0-)_";
         private static TokenHelper tokenHelper = new TokenHelper();
-
+ 
+        private static void ArgTest(int number)
+        {
+            Console.WriteLine("Number: {0}",number);
+        }
+        public class D
+        {
+            public DateTime LastRunTime { get; set; }
+        }
         static void Main(string[] args)
         {
+            var auditRules = new List<D> { new D { LastRunTime = DateTime.Now } ,new D { LastRunTime = DateTime.Now.AddDays(-1) }, };
+            auditRules.Sort((x, y) =>
+            {
+                if (x.LastRunTime > y.LastRunTime)
+                {
+                    return 1;
+                }
+                if (x.LastRunTime < y.LastRunTime)
+                {
+                    return -1;
+                }
+                return -0;
+            });
+            OpenXmlTest.Test();
+            var datsdfe = DateTime.FromOADate(43794.2714930556);
+
+            SiteLevel.RecycleBinTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            WebLevel.GetLitByTitle(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+
+            var guid = Guid.NewGuid();
+
+            Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            int number = int.MaxValue;
+            ArgTest(number -= 1);
             try
             {
-
+                var date = new DateTime(1563418812947);
                 Initalize();
 
                 //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));

@@ -17,5 +17,19 @@ namespace SharePointCSOMAPI
             context.ExecuteQuery();
         }
 
+        public static void GetLitByTitle(ClientContext context)
+        {
+            context.Load(context.Web.Lists,lists=>lists.Include(l=>l.Title));
+            context.ExecuteQuery();
+            foreach (var temp in context.Web.Lists)
+            {
+
+            }
+            //var list = context.Web.Lists.GetByTitle("Documents");
+            var list = context.Web.Lists.GetByTitle("Dokumente");
+            context.Load(list);
+            context.ExecuteQuery();
+        }
+
     }
 }

@@ -9,11 +9,49 @@ namespace SharePointCSOMAPI
 {
     class SiteLevel
     {
+        public static void RecycleBinTest(ClientContext context)
+        {
+            context.Load(context.Site.RecycleBin);
+            context.ExecuteQuery();
+            var items = CovertToRecycleBinItemList(context.Site.RecycleBin);
+            foreach (var item in items)
+            {
+                if (item.LeafName == "F11")
+                {
+                    item.Restore();
+                }
+            }
+            context.ExecuteQuery();
+        }
+
+        /// <summary>
+        /// Convert to List and sort
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        private static List<RecycleBinItem> CovertToRecycleBinItemList(RecycleBinItemCollection items)
+        {
+            var recycleBinItems = items.ToList();
+            recycleBinItems.Sort((x, y) =>
+            {
+                if (x.DeletedDate > y.DeletedDate)
+                {
+                    return 1;
+                }
+                if (x.DeletedDate < y.DeletedDate)
+                {
+                    return -1;
+                }
+                return -0;
+            });
+            return recycleBinItems;
+        }
+
         public static void GetSiteSize(ClientContext context)
         {
-            context.Load(context.Site,s=>s.Usage);
+            context.Load(context.Site, s => s.Usage);
             context.ExecuteQuery();
-            double sizeGB = Math.Round((double)context.Site.Usage.Storage/ (1024 * 1024 * 1024),2);
+            double sizeGB = Math.Round((double)context.Site.Usage.Storage / (1024 * 1024 * 1024), 2);
         }
     }
 }
