@@ -152,6 +152,7 @@
     <Compile Include="Tools\CheckFilesExit.cs" />
     <Compile Include="Utility\LargeListQueryWorker.cs" />
     <Compile Include="Utility\SerializerHelper.cs" />
+    <Compile Include="ViewLevel.cs" />
     <Compile Include="WebLevel.cs" />
   </ItemGroup>
   <ItemGroup>

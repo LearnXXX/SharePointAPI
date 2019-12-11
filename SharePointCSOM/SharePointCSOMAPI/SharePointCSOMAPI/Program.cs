@@ -5,6 +5,7 @@ using Microsoft.SharePoint.Client;
 using SharePointCSOMAPI.Tools;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -17,21 +18,19 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://wrapper.sharepoint.com/sites/joey";
+        private static string siteUrl = "https://m365x157144.sharepoint.com/sites/zjqtest1/sub1/Shared Documents";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
         //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         //private static string userName = "aosiptest@longgod.onmicrosoft.com";
         //private static string password = "demo12!@";
-        //private static string userName = "xluo@xluov.onmicrosoft.com";
-        //private static string password = "demo0-)_";
-        private static string userName = "yczhou@wrapper.onmicrosoft.com";
+        private static string userName = "xluo@xluov.onmicrosoft.com";
         private static string password = "demo0-)_";
         private static TokenHelper tokenHelper = new TokenHelper();
- 
+
         private static void ArgTest(int number)
         {
-            Console.WriteLine("Number: {0}",number);
+            Console.WriteLine("Number: {0}", number);
         }
         public class D
         {
@@ -39,19 +38,7 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
-            var auditRules = new List<D> { new D { LastRunTime = DateTime.Now } ,new D { LastRunTime = DateTime.Now.AddDays(-1) }, };
-            auditRules.Sort((x, y) =>
-            {
-                if (x.LastRunTime > y.LastRunTime)
-                {
-                    return 1;
-                }
-                if (x.LastRunTime < y.LastRunTime)
-                {
-                    return -1;
-                }
-                return -0;
-            });
+            ViewLevel.UpdateContentTypeId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             OpenXmlTest.Test();
             var datsdfe = DateTime.FromOADate(43794.2714930556);
 
