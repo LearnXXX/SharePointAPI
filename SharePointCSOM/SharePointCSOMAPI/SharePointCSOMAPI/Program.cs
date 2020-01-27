@@ -2,6 +2,8 @@
 using HtmlAgilityPack;
 using log4net;
 using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.Taxonomy;
+using Newtonsoft.Json;
 using SharePointCSOMAPI.Tools;
 using System;
 using System.Collections.Generic;
@@ -18,14 +20,18 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://m365x157144.sharepoint.com/sites/zjqtest1/sub1/Shared Documents";
+        private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
+        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/ls_group6";
+        //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
         //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         //private static string userName = "aosiptest@longgod.onmicrosoft.com";
         //private static string password = "demo12!@";
-        private static string userName = "xluo@xluov.onmicrosoft.com";
-        private static string password = "demo0-)_";
+        //private static string userName = "xluo@xluov.onmicrosoft.com";
+        //private static string password = "demo0-)_";
+        private static string userName = "admin@M365x157144.onmicrosoft.com";
+        private static string password = "X60LyQ995R";
         private static TokenHelper tokenHelper = new TokenHelper();
 
         private static void ArgTest(int number)
@@ -38,11 +44,43 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
+            ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+
+            dynamic abc = JsonConvert.DeserializeObject(System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\webRoleA.xml"));
+
+            foreach (dynamic role in abc.d.results)
+            {
+                var principalId = Convert.ToInt32(role.PrincipalId.Value);
+                var url = role.RoleDefinitionBindings.__deferred.uri.Value;
+                var description = role.Description.Value;
+                var Id = Convert.ToInt32(role.Id.Value);
+                var name = role.Name.Value;
+                var order = Convert.ToInt32(role.Order.Value);
+                var basePermissionsHigh = Convert.ToUInt32(role.BasePermissions.High.Value);
+                var basePermissionsLow = Convert.ToUInt32(role.BasePermissions.Low.Value);
+            }
+            SiteLevel.RecycleBinTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            var valuese = JsonConvert.DeserializeObject<TaxonomyFieldValue>(System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\value.txt"));
+
+            var Label = valuese.Label;
+            var termGuid = valuese.TermGuid;
+            var Wssid = valuese.WssId;
+
+            Dictionary<int, string> mWebUser = new Dictionary<int, string>() { { 1, "1" }, { 2, "2" }, };
+
+            var user = mWebUser.FirstOrDefault(temp => temp.Value.EndsWith("3", StringComparison.OrdinalIgnoreCase));
+
+            FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            var uri = new Uri("https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com");
+            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password), string.Format("{0}/{1}", siteUrl, "SiteAssets"));
+            ViewLevel.CreateViewWithBaseViewId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             ViewLevel.UpdateContentTypeId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             OpenXmlTest.Test();
             var datsdfe = DateTime.FromOADate(43794.2714930556);
 
-            SiteLevel.RecycleBinTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             WebLevel.GetLitByTitle(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
 
             var guid = Guid.NewGuid();

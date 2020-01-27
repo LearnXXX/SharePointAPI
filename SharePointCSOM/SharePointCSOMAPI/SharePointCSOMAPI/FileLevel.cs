@@ -9,6 +9,16 @@ namespace SharePointCSOMAPI
 {
     class FileLevel
     {
+        public static void LoadFileProperties(ClientContext context)
+        {
+            var list = context.Site.RootWeb.Lists.GetByTitle("Documents");
+            var item = list.GetItemById(2);
+            context.Load(item);
+            context.Load(item.RoleAssignments, r => r.Include(a => a.PrincipalId, async => async.RoleDefinitionBindings, a => a.Member));
+            context.Load(context.Site.RootWeb.SiteUsers);
+            context.ExecuteQuery();
+        }
+
         public static void Add1WFiles(ClientContext context)
         {
             var list = context.Site.RootWeb.Lists.GetByTitle("6KFiles");

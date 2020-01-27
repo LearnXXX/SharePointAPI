@@ -9,6 +9,14 @@ namespace SharePointCSOMAPI
 {
     class SiteLevel
     {
+        public static void GetSiteOwner(ClientContext context)
+        {
+              context.Load(context.Site.Owner);
+              context.Load(context.Site.RootWeb.CurrentUser);
+            context.ExecuteQuery();
+            context.Site.Owner = context.Site.RootWeb.CurrentUser;
+            context.ExecuteQuery();
+        }
         public static void RecycleBinTest(ClientContext context)
         {
             context.Load(context.Site.RecycleBin);
