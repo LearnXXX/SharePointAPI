@@ -27,9 +27,11 @@ namespace SharePointRestAPI
         }
         static void Main(string[] args)
         {
+            TestBatchRequest.Test();
+
             var accessToken = Authentication.GetAccessTokenByCertificateV1("https://longgod.sharepoint.com/.default", TenantId, ClientId, new X509Certificate2(GetCertificateBytes(), "demo12!@"));
             accessToken = Authentication.GetAccessTokenByCertificateV2("https://longgod.sharepoint.com/", TenantId, ClientId, new X509Certificate2(GetCertificateBytes(), "demo12!@"));
-            var cookies = Authentication.GetCookiesByUserInfo("aosiptest@longgod.onmicrosoft.com", "demo12!@");
+            var cookies = Authentication.GetCookiesByUserInfo(new Uri(""), "admin@M365x157144.onmicrosoft.com", "X60LyQ995R");
         }
 
         private static void Test(string accessToken)

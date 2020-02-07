@@ -23,18 +23,27 @@ namespace SharePointRestAPI
             }
             return pwd;
         }
-        public static CookieContainer GetCookiesByUserInfo(string userName, string password)
+
+        public static string GetAccessTokenByUserInfo(Uri siteUrl, string userName, string password)
         {
-            var token = new SharePointOnlineCredentials(userName, GetPassword(password)).GetAuthenticationCookie(new Uri("https://longgod.sharepoint.com/sites/XluoTest1"));
+            using (var secuePassword = GetPassword(password))
+            {
+                var credential = new SharePointOnlineCredentials(userName, secuePassword);
+                return credential.GetAuthenticationCookie(siteUrl);
+            }
+        }
+        public static CookieContainer GetCookiesByUserInfo(Uri siteUrl, string userName, string password)
+        {
+            var token = new SharePointOnlineCredentials(userName, GetPassword(password)).GetAuthenticationCookie(siteUrl);
 
             string cookieName = token.Substring(0, token.IndexOf('='));
             string cookieValue = token.Substring(token.IndexOf('=') + 1);
             CookieContainer cookies = new CookieContainer();
-            cookies.Add(new Cookie(cookieName, cookieValue, "/", "longgod.sharepoint.com"));
+            cookies.Add(new Cookie(cookieName, cookieValue, "/", siteUrl.Host));
             return cookies;
         }
 
-        public static string GetAccessTokenByCertificateV1(string scope,string tenantId, string clientId, X509Certificate2 certificate)
+        public static string GetAccessTokenByCertificateV1(string scope, string tenantId, string clientId, X509Certificate2 certificate)
         {
             var app = ConfidentialClientApplicationBuilder.Create(clientId).WithTenantId(tenantId).WithCertificate(certificate).Build();
             string[] scopes = new string[] { scope };
@@ -49,12 +58,12 @@ namespace SharePointRestAPI
         /// <param name="clientId"></param>
         /// <param name="certificate"></param>
         /// <returns></returns>
-        public static string GetAccessTokenByCertificateV2(string resource,string tenantId, string clientId, X509Certificate2 certificate)
+        public static string GetAccessTokenByCertificateV2(string resource, string tenantId, string clientId, X509Certificate2 certificate)
         {
             string authority = string.Format("https://login.windows.net/{0}", tenantId);
             AuthenticationContext context = new AuthenticationContext(authority, Microsoft.IdentityModel.Clients.ActiveDirectory.TokenCache.DefaultShared);
             var cac = new Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate(clientId.ToString(), certificate);
-            return  context.AcquireTokenAsync(resource, cac).Result.AccessToken;
+            return context.AcquireTokenAsync(resource, cac).Result.AccessToken;
 
         }
     }
