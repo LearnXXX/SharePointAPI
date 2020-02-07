@@ -20,8 +20,8 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
-        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/ls_group6";
+        //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
+        private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest2";
         //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
         //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
@@ -44,32 +44,9 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
-            ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
 
-            dynamic abc = JsonConvert.DeserializeObject(System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\webRoleA.xml"));
-
-            foreach (dynamic role in abc.d.results)
-            {
-                var principalId = Convert.ToInt32(role.PrincipalId.Value);
-                var url = role.RoleDefinitionBindings.__deferred.uri.Value;
-                var description = role.Description.Value;
-                var Id = Convert.ToInt32(role.Id.Value);
-                var name = role.Name.Value;
-                var order = Convert.ToInt32(role.Order.Value);
-                var basePermissionsHigh = Convert.ToUInt32(role.BasePermissions.High.Value);
-                var basePermissionsLow = Convert.ToUInt32(role.BasePermissions.Low.Value);
-            }
-            SiteLevel.RecycleBinTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            var valuese = JsonConvert.DeserializeObject<TaxonomyFieldValue>(System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\value.txt"));
-
-            var Label = valuese.Label;
-            var termGuid = valuese.TermGuid;
-            var Wssid = valuese.WssId;
-
-            Dictionary<int, string> mWebUser = new Dictionary<int, string>() { { 1, "1" }, { 2, "2" }, };
-
-            var user = mWebUser.FirstOrDefault(temp => temp.Value.EndsWith("3", StringComparison.OrdinalIgnoreCase));
-
+            //FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));

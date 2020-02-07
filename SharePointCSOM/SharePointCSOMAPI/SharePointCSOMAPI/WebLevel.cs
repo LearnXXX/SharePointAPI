@@ -9,7 +9,6 @@ namespace SharePointCSOMAPI
 {
     class WebLevel
     {
-
         public static bool CheckListExist(ClientContext context, string listUrl)
         {
             

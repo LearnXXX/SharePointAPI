@@ -9,6 +9,11 @@ namespace SharePointCSOMAPI
 {
     class SiteLevel
     {
+        public static void GetSiteUserAndGroups(ClientContext context)
+        {
+            context.Load(context.Web.SiteUsers);
+            context.ExecuteQuery();
+        }
         public static void GetSiteOwner(ClientContext context)
         {
               context.Load(context.Site.Owner);
