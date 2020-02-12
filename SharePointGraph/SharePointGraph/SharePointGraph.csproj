@@ -85,8 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication.cs" />
+    <Compile Include="CustomHttpMessageHandler.cs" />
     <Compile Include="GraphApiCallHelper.cs" />
     <Compile Include="GraphAPIVersion.cs" />
+    <Compile Include="CustomHTTPProvider.cs" />
     <Compile Include="ObjectAPIReference\Drive.cs" />
     <Compile Include="ObjectAPIReference\Folder.cs" />
     <Compile Include="ObjectAPIReference\List.cs" />

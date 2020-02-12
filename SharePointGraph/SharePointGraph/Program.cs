@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -77,6 +78,7 @@ namespace SharePointGraph
 
         private static void GraphTest()
         {
+            WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
             var clientId = "50927317-52bf-40c0-a4f1-9f19d04049a0";
             var tenantId = "b4b8748a-a573-4e49-8665-3a632b65a60c";
             var application = ConfidentialClientApplicationBuilder.Create(clientId)
@@ -85,13 +87,21 @@ namespace SharePointGraph
                         .Build();
             var token = application.AcquireTokenForClient(new List<string> { "https://graph.microsoft.com/.default" }).ExecuteAsync().Result.AccessToken;
 
+            //var graphService = new GraphServiceClient("https://graph.microsoft.com/v1.0", new DelegateAuthenticationProvider(a =>
+            //{
+            //    a.Headers.Add("Authorization", "Bearer " + token);
+            //    return Task.FromResult(0);
+            //}));
             var graphService = new GraphServiceClient("https://graph.microsoft.com/v1.0", new DelegateAuthenticationProvider(a =>
             {
                 a.Headers.Add("Authorization", "Bearer " + token);
                 return Task.FromResult(0);
-            }));
+            }),new HttpProvider(new XLuoRetryHandler(new HttpClientHandler()),true,new Serializer()));
             var siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
             var siteUri = new Uri(siteUrl);
+            //var p2 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Drive.Items["01Z2O2D6JXDOWJEWGK7JBYDG26AR75AAV6"].Permissions.Request().GetAsync();
+            //var perm1 = p2.Result;
+            var perm2 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Drive.Items["01Z2O2D6PLBLQ4XTYMB5EKNS3V5IVZZNLE"].Permissions.Request().GetAsync().Result;
 
             var fields = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Request().Expand("columns").GetAsync().Result;
             var itemsss = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Drive.Root.ItemWithPath("ffb").Children.Request().GetAsync().Result;
@@ -142,7 +152,7 @@ namespace SharePointGraph
         }
         static void Main(string[] args)
         {
-
+            GraphTest();
 
             var accessToken = Authentication.GetAccessTokenBySecret(TenantId, ClientId, ClientSecret);
 

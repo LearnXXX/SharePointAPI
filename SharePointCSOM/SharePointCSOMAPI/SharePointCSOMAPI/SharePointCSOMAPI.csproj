@@ -184,10 +184,12 @@
     <Compile Include="DocumentLevel.cs" />
     <Compile Include="FileLevel.cs" />
     <Compile Include="FolderLevel.cs" />
+    <Compile Include="ListItemLevel.cs" />
     <Compile Include="ListLevel.cs" />
     <Compile Include="MetadataService.cs" />
     <Compile Include="Navigation.cs" />
     <Compile Include="OpenXmlTest.cs" />
+    <Compile Include="Others\JsonTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteLevel.cs" />
