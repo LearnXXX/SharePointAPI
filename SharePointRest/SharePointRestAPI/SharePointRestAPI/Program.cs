@@ -27,6 +27,7 @@ namespace SharePointRestAPI
         }
         static void Main(string[] args)
         {
+            RenderListDataMethodTest.Test();
             TestBatchRequest.Test();
 
             var accessToken = Authentication.GetAccessTokenByCertificateV1("https://longgod.sharepoint.com/.default", TenantId, ClientId, new X509Certificate2(GetCertificateBytes(), "demo12!@"));
