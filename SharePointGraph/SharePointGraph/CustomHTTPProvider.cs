@@ -37,6 +37,7 @@ namespace SharePointGraph
 
         public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
         {
+            //throw new Exception();
             return  provider.SendAsync(request, completionOption, cancellationToken);
             //throw new NotImplementedException();
         }

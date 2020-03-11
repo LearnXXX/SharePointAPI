@@ -40,8 +40,11 @@ namespace SharePointGraph
             HttpResponseMessage response = null;
             for (int i = 0; i < MaxRetries; i++)
             {
-                response = await base.SendAsync(request, cancellationToken);
-                if (response.IsSuccessStatusCode)
+                response = await base.SendAsync(request, new CancellationToken(false));
+                if (!response.IsSuccessStatusCode
+                       && (response.StatusCode == (HttpStatusCode)429))
+                { }
+                    if (response.IsSuccessStatusCode)
                 {
                     return response;
                 }
@@ -1156,7 +1159,11 @@ namespace SharePointGraph
                     Contract.Assert(result, "Invalid header name.");
                 }
             }
-
+            bool exception = false;
+            if (exception)
+            {
+                throw new Exception();
+            }
             return response;
         }
 

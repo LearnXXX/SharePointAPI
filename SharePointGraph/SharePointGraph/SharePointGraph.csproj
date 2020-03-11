@@ -35,8 +35,8 @@
     <Reference Include="Microsoft.Graph, Version=1.21.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Graph.1.21.0\lib\net45\Microsoft.Graph.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Graph.Core, Version=1.19.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Graph.Core.1.19.0\lib\net45\Microsoft.Graph.Core.dll</HintPath>
+    <Reference Include="Microsoft.Graph.Core, Version=1.20.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Graph.Core.1.20.0\lib\net45\Microsoft.Graph.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=4.1.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Identity.Client.4.1.0\lib\net45\Microsoft.Identity.Client.dll</HintPath>
@@ -86,7 +86,12 @@
   <ItemGroup>
     <Compile Include="Authentication.cs" />
     <Compile Include="CustomHttpMessageHandler.cs" />
+    <Compile Include="CustomSerializer.cs" />
     <Compile Include="GraphApiCallHelper.cs" />
+    <Compile Include="GraphAPITester\GraphAPITester.cs" />
+    <Compile Include="GraphAPITester\GraphAPITesterDelta.cs" />
+    <Compile Include="GraphAPITester\GraphAPITesterItem.cs" />
+    <Compile Include="GraphAPITester\GraphCommonUtility.cs" />
     <Compile Include="GraphAPIVersion.cs" />
     <Compile Include="CustomHTTPProvider.cs" />
     <Compile Include="ObjectAPIReference\Drive.cs" />
@@ -100,6 +105,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="GraphCertificates\XluoCert.cer" />
+    <EmbeddedResource Include="GraphCertificates\XluoCert.pfx" />
     <None Include="packages.config" />
     <EmbeddedResource Include="ReferenceFiles\RestAPICertificate.pfx" />
   </ItemGroup>

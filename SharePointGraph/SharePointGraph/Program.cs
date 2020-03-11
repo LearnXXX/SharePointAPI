@@ -1,19 +1,23 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-
 namespace SharePointGraph
 {
     class Program
@@ -22,7 +26,8 @@ namespace SharePointGraph
         private const string TenantId = "65001581-c366-4764-80ab-aef9bc86ecca";
         private const string ClientSecret = "64f=:]DsKCoZP9kfXJlw1EpTRwDn?N6M";
 
-
+        private const string XLUOVClientId = "ed438ecd-b165-4dd2-a681-ed55b25e7069";
+        private const string XLUOVTenantId = "1a58e338-5637-4e10-88ce-591844ee5470";
         static X509Certificate2 LoadCertificate()
         {
             //var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharePointGraph.exportedcert.pfx");
@@ -37,7 +42,20 @@ namespace SharePointGraph
             }
         }
 
-        private static byte[] GetCertificateBytes()
+
+        private static X509Certificate2 GetGraphCertificate()
+        {
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharePointGraph.GraphCertificates.XluoCert.pfx"))
+            {
+                using (var binaryReader = new BinaryReader(stream))
+                {
+                    var rawData = binaryReader.ReadBytes((Int32)stream.Length);
+                    return new X509Certificate2(rawData, "demo12!@");
+                }
+            }
+
+        }
+        private static byte[] GetRestCertificateBytes()
         {
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SharePointGraph.ReferenceFiles.RestAPICertificate.pfx"))
             {
@@ -57,27 +75,10 @@ namespace SharePointGraph
             return datas;
         }
 
-        private static List<DriveItem> GetAllSubFolders(GraphServiceClient graphServiceClient, string driveId, string folderId)
-        {
-            List<DriveItem> allOfFolders = new List<DriveItem>();
-            List<DriveItem> subItmes = new List<DriveItem>();
-            var currentPage = graphServiceClient.Drives[driveId].Items[folderId].Children.Request().GetAsync().Result;
-            GetRequestAllOfDatas(currentPage, subItmes);
-            var subFolders = subItmes.Where(item => item.Folder != null).ToList();
-
-            foreach (var child in subFolders)
-            {
-                if (child.Folder.ChildCount > 0)
-                {
-                    allOfFolders.AddRange(GetAllSubFolders(graphServiceClient, driveId, child.Id));
-                }
-            }
-            allOfFolders.AddRange(subFolders);
-            return allOfFolders;
-        }
 
         private static void GraphTest()
         {
+            var canceled = new CancellationToken();
             WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
             var clientId = "50927317-52bf-40c0-a4f1-9f19d04049a0";
             var tenantId = "b4b8748a-a573-4e49-8665-3a632b65a60c";
@@ -96,16 +97,21 @@ namespace SharePointGraph
             {
                 a.Headers.Add("Authorization", "Bearer " + token);
                 return Task.FromResult(0);
-            }),new HttpProvider(new XLuoRetryHandler(new HttpClientHandler()),true,new Serializer()));
+            }), new CustomHTTPProvider(new Serializer()));
             var siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
             var siteUri = new Uri(siteUrl);
             //var p2 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Drive.Items["01Z2O2D6JXDOWJEWGK7JBYDG26AR75AAV6"].Permissions.Request().GetAsync();
             //var perm1 = p2.Result;
-            var perm2 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Drive.Items["01Z2O2D6PLBLQ4XTYMB5EKNS3V5IVZZNLE"].Permissions.Request().GetAsync().Result;
-
+            var perm2 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Items["8828"].DriveItem.Permissions.RequestUrl;
+            var perm3 = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Items["8828"].DriveItem.Permissions.RequestUrl;
+            var request = new BatchRequestContent();
+            var requestID1 = request.AddBatchRequestStep(new HttpRequestMessage(HttpMethod.Get, perm2));
+            var requestID2 = request.AddBatchRequestStep(new HttpRequestMessage(HttpMethod.Get, perm3));
+            var ssssfs = graphService.Batch.Request().WithMaxRetry(3).PostAsync(request).Result;
+            var r1 = ssssfs.GetResponseByIdAsync<Permission>(requestID1).Result;
+            var r2 = ssssfs.GetResponseByIdAsync<Permission>(requestID2).Result;
             var fields = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Request().Expand("columns").GetAsync().Result;
             var itemsss = graphService.Sites["m365x157144-my.sharepoint.com,47b37a14-09dd-407f-9509-6fa9b4ad20d4,08d6db6f-5165-4fd4-ad22-7a61201f766a"].Lists["a44cb590-eb05-45d4-bf28-30f73385cd3e"].Drive.Root.ItemWithPath("ffb").Children.Request().GetAsync().Result;
-            var allFolders = GetAllSubFolders(graphService, "b!KuhVBiISlE2UiUGxsisMZwa-BXE1X3dBpZTQWlyss7B_-Pp1Ze-FTrovkzVI5c-j", "01AIHEEQF6Y2GOVW7725BZO354PWSELRRZ");
 
 
 
@@ -152,14 +158,27 @@ namespace SharePointGraph
         }
         static void Main(string[] args)
         {
-            GraphTest();
+            WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
+            GraphAPITester tester = new GraphAPITester(XLUOVClientId, XLUOVTenantId, GetGraphCertificate());
+            var w = Stopwatch.StartNew();
+            //5KFoldersAnd5KFiles : b!j9o9KsE_LU2n_KEOpEqjEDdaShSRC1RHhFnytKAck9TI1HqcROTqR6uJNCgoEbyR  013TTTP5N6Y2GOVW7725BZO354PWSELRRZ
+            //10KFilesIn1Folder :   b!j9o9KsE_LU2n_KEOpEqjEDdaShSRC1RHhFnytKAck9RMNmw8-bpLS6L1Ktv-bu9G   013TTTP5N6Y2GOVW7725BZO354PWSELRRZ
+            //Documents: b!j9o9KsE_LU2n_KEOpEqjEDdaShSRC1RHhFnytKAck9TnRNgoOXHVT5lHMk7EZqqx     013TTTP5N6Y2GOVW7725BZO354PWSELRRZ     5folders and 2000files under folder
+            //var items = tester.GetAllItemsUnderFolder("b!j9o9KsE_LU2n_KEOpEqjEDdaShSRC1RHhFnytKAck9RMNmw8-bpLS6L1Ktv-bu9G", "013TTTP5N6Y2GOVW7725BZO354PWSELRRZ");
+            w.Stop();
+            Console.WriteLine($"GetAllSubFolders:{w.Elapsed.TotalSeconds}");
+            var w2 = Stopwatch.StartNew();
+            var deltaItems = tester.DeltaTest("b!j9o9KsE_LU2n_KEOpEqjEDdaShSRC1RHhFnytKAck9RMNmw8-bpLS6L1Ktv-bu9G");
+            w2.Stop();
+            Console.WriteLine($"DeltaTest:{w2.Elapsed.TotalSeconds}");
+            tester.GetDriveFiles("xluov.sharepoint.com,2a3dda8f-3fc1-4d2d-a7fc-a10ea44aa310,144a5a37-0b91-4754-8459-f2b4a01c93d4", "28d844e7-7139-4fd5-9947-324ec466aab1", "2KFiles");
 
             var accessToken = Authentication.GetAccessTokenBySecret(TenantId, ClientId, ClientSecret);
 
 
             //var accessToken = Authentication.GetAccessTokenByCertificate(TenantId, ClientId, new X509Certificate2(GetCertificateBytes(), "demo12!@"));
 
-           
+
             RestAPITest(accessToken);
             dynamic siteInfo = GetSiteCollectionByUrl(accessToken, "https://longgod.sharepoint.com/sites/XluoTest1/");
             GetListsWithSystem(accessToken, (string)siteInfo.id);
