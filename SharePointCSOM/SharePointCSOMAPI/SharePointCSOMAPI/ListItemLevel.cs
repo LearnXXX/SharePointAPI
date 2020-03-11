@@ -12,7 +12,7 @@ namespace SharePointCSOMAPI
         public static void LoadItemProperties(ClientContext context)
         {
             var list = context.Site.RootWeb.Lists.GetById(new Guid("997805ea-c20c-493e-b3ee-8627100604d6"));
-            var user = list.GetItemById(3);
+            var user = list.GetItemById(5);
             var group = list.GetItemById(7);
             //var item = list.GetItemById(2);
             context.Load(user);

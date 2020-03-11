@@ -11,10 +11,12 @@ namespace SharePointCSOMAPI
     {
         public static void LoadFileProperties(ClientContext context)
         {
-            var list = context.Site.RootWeb.Lists.GetByTitle("Documents");
-            var item = list.GetItemByUniqueId(new Guid("4acbb960-da5d-4e09-95ba-1106a157e0a4"));
-            //var item = list.GetItemById(2);
+            var list = context.Site.RootWeb.Lists.GetByTitle("DeltaTest");
+            //var item = list.GetItemByUniqueId(new Guid("4acbb960-da5d-4e09-95ba-1106a157e0a4"));
+            var item = list.GetItemById(5);
             context.Load(item);
+            context.Load(item.File);
+            context.Load(item.File.Properties);
             context.ExecuteQuery();
             context.Load(item.RoleAssignments, r => r.Include(a => a.PrincipalId, async => async.RoleDefinitionBindings, a => a.Member));
             context.Load(context.Site.RootWeb.SiteUsers);
@@ -23,14 +25,31 @@ namespace SharePointCSOMAPI
 
         public static void Add1WFiles(ClientContext context)
         {
-            var list = context.Site.RootWeb.Lists.GetByTitle("6KFiles");
-            //Context.ExecuteQuery();
+            var list = context.Site.RootWeb.Lists.GetByTitle("Documents");
+            context.Load(list);
+            context.ExecuteQuery();
+            for (int index = 1; index <= 5; index++)
+            {
+                var folder1 = list.RootFolder.Folders.Add($"Folder{index}");
+                folder1.Update();
+                if (index % 100 == 0)
+                {
+                    context.ExecuteQuery();
+                }
+            }
             context.Load(list.RootFolder.Folders);
             context.ExecuteQuery();
+            DateTime date = DateTime.Now;
             foreach (var folder in list.RootFolder.Folders)
             {
-                AddFiles(context, folder, 2000);
+
+                if (folder.ItemCount == 0&& folder.Name!= "Forms")
+                {
+                    AddFiles(context, folder, 2000);
+                }
+                
             }
+            context.ExecuteQuery();
         }
 
         private static void AddFiles(ClientContext context, Folder folder, int count)
@@ -38,7 +57,7 @@ namespace SharePointCSOMAPI
             DateTime date = DateTime.Now;
             try
             {
-                for (int index = 0; index <= count; index++)
+                for (int index = 0; index < count; index++)
                 {
                     date = date.AddHours(1);
                     if (index % 100 == 0)
@@ -49,7 +68,7 @@ namespace SharePointCSOMAPI
 
                     var info = new FileCreationInformation { Content = System.Text.Encoding.Default.GetBytes("1"), Url = date.ToString("yyyyMMddHHmmss") + ".txt", };
                     var file = folder.Files.Add(info);
-                    file.ListItemAllFields["UniqueNumber"] = Guid.NewGuid().ToString();
+                    //file.ListItemAllFields["UniqueNumber"] = Guid.NewGuid().ToString();
                     file.ListItemAllFields.Update();
 
                 }

@@ -7,12 +7,14 @@ using Newtonsoft.Json;
 using SharePointCSOMAPI.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SharePointCSOMAPI
@@ -20,18 +22,21 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
-        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest2";
+        //private static string siteUrl = "https://xluov-admin.sharepoint.com";
+        //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
+        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1";
         //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
+        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest4";
+        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoGroup1";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
         //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         //private static string userName = "aosiptest@longgod.onmicrosoft.com";
         //private static string password = "demo12!@";
-        //private static string userName = "xluo@xluov.onmicrosoft.com";
-        //private static string password = "demo0-)_";
-        private static string userName = "admin@M365x157144.onmicrosoft.com";
-        private static string password = "X60LyQ995R";
+        private static string userName = "xluo@xluov.onmicrosoft.com";
+        private static string password = "demo12!@QW";
+        //private static string userName = "admin@M365x157144.onmicrosoft.com";
+        //private static string password = "X60LyQ995R";
         private static TokenHelper tokenHelper = new TokenHelper();
 
         private static void ArgTest(int number)
@@ -44,11 +49,13 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
-            //SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-
-            WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
-            ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
+            //TenantLevel.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
