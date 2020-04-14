@@ -11,14 +11,14 @@ namespace SharePointCSOMAPI
     {
         public static void LoadItemProperties(ClientContext context)
         {
-            var list = context.Site.RootWeb.Lists.GetById(new Guid("997805ea-c20c-493e-b3ee-8627100604d6"));
-            var user = list.GetItemById(5);
-            var group = list.GetItemById(7);
-            //var item = list.GetItemById(2);
-            context.Load(user);
-            context.Load(group);
+            var list = context.Site.RootWeb.Lists.GetById(new Guid("068a0483-c851-4e05-b679-5e3f1e690de0"));
             context.ExecuteQuery();
-            context.Load(user.RoleAssignments, r => r.Include(a => a.PrincipalId, async => async.RoleDefinitionBindings, a => a.Member));
+
+            var item = list.GetItemById(3);
+            //var item = list.GetItemById(2);
+            context.Load(item);
+            context.ExecuteQuery();
+            context.Load(item.RoleAssignments, r => r.Include(a => a.PrincipalId, async => async.RoleDefinitionBindings, a => a.Member));
             context.Load(context.Site.RootWeb.SiteUsers);
             context.ExecuteQuery();
         }

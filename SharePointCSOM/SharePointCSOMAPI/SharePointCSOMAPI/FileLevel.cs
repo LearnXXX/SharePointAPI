@@ -13,8 +13,9 @@ namespace SharePointCSOMAPI
         {
             var list = context.Site.RootWeb.Lists.GetByTitle("DeltaTest");
             //var item = list.GetItemByUniqueId(new Guid("4acbb960-da5d-4e09-95ba-1106a157e0a4"));
-            var item = list.GetItemById(5);
+            var item = list.GetItemById(7);
             context.Load(item);
+            context.ExecuteQuery();
             context.Load(item.File);
             context.Load(item.File.Properties);
             context.ExecuteQuery();

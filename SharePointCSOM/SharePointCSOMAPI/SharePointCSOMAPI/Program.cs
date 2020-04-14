@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace SharePointCSOMAPI
 {
@@ -24,7 +25,9 @@ namespace SharePointCSOMAPI
         private static ILog logger = LogManager.GetLogger(typeof(Program));
         //private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
-        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1";
+        //private static string siteUrl = "https://wrappertest-my.sharepoint.com/personal/clxiong_wrappertest_onmicrosoft_com";
+        private static string siteUrl = "https://mydevo365.sharepoint.com/sites/Test7";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test2";
         //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
         //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest4";
         //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoGroup1";
@@ -33,8 +36,10 @@ namespace SharePointCSOMAPI
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         //private static string userName = "aosiptest@longgod.onmicrosoft.com";
         //private static string password = "demo12!@";
-        private static string userName = "xluo@xluov.onmicrosoft.com";
-        private static string password = "demo12!@QW";
+        private static string userName = "admin@mydevo365.onmicrosoft.com";
+        private static string password = "Shenmemima???2";
+        //private static string userName = "clxiong@wrappertest.onmicrosoft.com";
+        //private static string password = "1qaz2wsx!@QW";
         //private static string userName = "admin@M365x157144.onmicrosoft.com";
         //private static string password = "X60LyQ995R";
         private static TokenHelper tokenHelper = new TokenHelper();
@@ -47,15 +52,41 @@ namespace SharePointCSOMAPI
         {
             public DateTime LastRunTime { get; set; }
         }
+
+        private static string GetColumnName(string encodestring)
+        {
+            var dta = XmlConvert.EncodeName("_UIVersion");
+            var value = XmlConvert.DecodeName(encodestring);
+            if (string.Equals(value, encodestring))
+            {
+                if (value.StartsWith("OData_"))
+                {
+                    return value.Substring("OData_".Length);
+                }
+                return value;
+            }
+            return GetColumnName(value);
+        }
+
         static void Main(string[] args)
         {
+            AnalysisIndexDBSize.Start(@"C:\Users\xluo\Desktop\index280499016_d\index280499016_d.db");
+            //AnalysisIndexDBSize.Start(@"C:\Users\xluo\Desktop\index1630b7135513af8f13c78933da62b9fc.db");
+
+            Workflow.Load13ModeWorklfow(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password)); 
+            FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            var value = GetColumnName("OData__x005f_ModerationStatus");
+            Process proc = Process.GetCurrentProcess();
+            var meoryery = proc.PrivateMemorySize64;
+            WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
             FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             //SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            //WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
             //TenantLevel.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
