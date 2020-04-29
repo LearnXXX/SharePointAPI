@@ -83,11 +83,64 @@ namespace SharePointCSOMAPI.Tools
             var dbConnection = providerFactory.CreateConnection();
             dbConnection.ConnectionString = connectionString;
             dbConnection.Open();
-
-            AnalysisTable(dbConnection, "tb_body_index");
-            AnalysisTable(dbConnection, "tb_head_index");
+            AnalysisTableV2(dbConnection, "tb_body_index");
+            AnalysisTableV2(dbConnection, "tb_head_index");
+            //AnalysisTable(dbConnection, "tb_body_index");
+            //AnalysisTable(dbConnection, "tb_head_index");
         }
 
+        private static void AnalysisTableV2(DbConnection dbConnection, string tableName)
+        {
+            var tableColumnMapping = InitlizetableColumnMapping(dbConnection, "tb_body_index");
+
+            var queryString = new StringBuilder($"SELECT ");
+            foreach (var column in tableColumnMapping)
+            {
+                queryString.Append($" length({column.Key}) as {column.Key} ,");
+            }
+            queryString.Length--;//remove last ,
+            queryString.Append($" FROM {tableName} ");
+
+            using (var command = dbConnection.CreateCommand())
+            {
+                var dataTable = new DataTable();
+                command.CommandText = queryString.ToString();
+                using (var dataReader = command.ExecuteReader())
+                {
+                    dataTable.Load(dataReader);
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        Dictionary<string, long> temp = new Dictionary<string, long>();
+                        foreach (var length in tableColumnMapping)
+                        {
+                            temp[length.Key] = length.Value + GetRow(row, length.Key);
+                        }
+                        tableColumnMapping = temp;
+                    }
+                }
+                Report(tableColumnMapping, tableName);
+            }
+
+
+        }
+        private static Dictionary<string, long> InitlizetableColumnMapping(DbConnection dbConnection, string tableName)
+        {
+            var tableColumn = new Dictionary<string, long>();
+            using (var command = dbConnection.CreateCommand())
+            {
+                var dataTable = new DataTable();
+                command.CommandText = $"PRAGMA table_info([{tableName}])";
+                using (var dataReader = command.ExecuteReader())
+                {
+                    dataTable.Load(dataReader);
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        tableColumn[row[1].ToString()] = 0;
+                    }
+                }
+            }
+            return tableColumn;
+        }
         private static void AnalysisTable2(DbConnection dbConnection, string tableName)
         {
             tb_index = InitlizeMapping();
@@ -129,7 +182,7 @@ namespace SharePointCSOMAPI.Tools
                 using (var dataReader = command.ExecuteReader())
                 {
                     dataTable.Load(dataReader);
-                   foreach (DataRow row in dataTable.Rows)
+                    foreach (DataRow row in dataTable.Rows)
                     {
                         Dictionary<string, long> temp = new Dictionary<string, long>();
                         foreach (var length in tb_index)
