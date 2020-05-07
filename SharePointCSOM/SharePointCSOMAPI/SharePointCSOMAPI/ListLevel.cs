@@ -11,8 +11,8 @@ namespace SharePointCSOMAPI
     {
         public static void LoadListProperty(ClientContext context)
         {
-            var list = context.Web.Lists.GetByTitle("DeltaTest");
-            context.Load(list.ContentTypes);
+            var list = context.Web.Lists.GetByTitle("List1");
+            context.Load(list.Fields);
             context.Load(list);
             context.Load(list.RootFolder);
             context.ExecuteQuery();

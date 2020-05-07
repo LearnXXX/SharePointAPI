@@ -100,24 +100,34 @@ namespace SharePointCSOMAPI.Tools
             }
             queryString.Length--;//remove last ,
             queryString.Append($" FROM {tableName} ");
+            queryString.Append(" limit {0} offset {0}*{1}");
 
+
+            long pageIndex = 0;
+            long limite = 5000;
             using (var command = dbConnection.CreateCommand())
             {
                 var dataTable = new DataTable();
-                command.CommandText = queryString.ToString();
-                using (var dataReader = command.ExecuteReader())
+                do
                 {
-                    dataTable.Load(dataReader);
-                    foreach (DataRow row in dataTable.Rows)
+                    dataTable = new DataTable();
+                    command.CommandText = string.Format(queryString.ToString(), limite, pageIndex);
+                    using (var dataReader = command.ExecuteReader())
                     {
-                        Dictionary<string, long> temp = new Dictionary<string, long>();
-                        foreach (var length in tableColumnMapping)
+                        dataTable.Load(dataReader);
+                        foreach (DataRow row in dataTable.Rows)
                         {
-                            temp[length.Key] = length.Value + GetRow(row, length.Key);
+                            Dictionary<string, long> temp = new Dictionary<string, long>();
+                            foreach (var length in tableColumnMapping)
+                            {
+                                temp[length.Key] = length.Value + GetRow(row, length.Key);
+                            }
+                            tableColumnMapping = temp;
                         }
-                        tableColumnMapping = temp;
                     }
-                }
+                    pageIndex++;
+                } while (dataTable.Rows.Count == limite);
+
                 Report(tableColumnMapping, tableName);
             }
 

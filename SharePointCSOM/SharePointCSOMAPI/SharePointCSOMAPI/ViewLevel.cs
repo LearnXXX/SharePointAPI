@@ -9,6 +9,20 @@
 
     class ViewLevel
     {
+        public static void Test1(ClientContext context)
+        {
+            var list = context.Web.Lists.GetByTitle("List2");
+            context.Load(list.Views);
+            context.ExecuteQuery();
+            foreach (var view in list.Views)
+            {
+                view.ViewFields.Add("LinkTitle");
+                view.ViewFields.Add("AAA");
+                view.Update();
+                context.ExecuteQuery();
+            }
+        }
+
         public static void CreateViewWithBaseViewId(ClientContext context)
         {
 
@@ -21,7 +35,7 @@
             //    context.Load(webpart.WebPart);
             //    context.ExecuteQuery();
             //}
-            var list = context.Web.Lists.GetByTitle("DD");
+            var list = context.Web.Lists.GetByTitle("List2");
             context.Load(list.Views);
             context.ExecuteQuery();
             foreach (var view in list.Views)

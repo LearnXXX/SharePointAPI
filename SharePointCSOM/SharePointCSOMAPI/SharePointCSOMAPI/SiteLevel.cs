@@ -11,17 +11,17 @@ namespace SharePointCSOMAPI
     {
         public static void GetSiteUserAndGroups(ClientContext context)
         {
-            //var user = context.Web.EnsureUser("i:0#.f|membership|admin@m365x157144.onmicrosoft.com");
-            context.Site.Owner = null;
-            context.ExecuteQuery();
+            ////var user = context.Web.EnsureUser("i:0#.f|membership|admin@m365x157144.onmicrosoft.com");
+            //context.Site.Owner = null;
+            //context.ExecuteQuery();
             context.Load(context.Site.Owner);
             context.Load(context.Web.SiteUsers);
             context.ExecuteQuery();
         }
         public static void GetSiteOwner(ClientContext context)
         {
-              context.Load(context.Site.Owner);
-              context.Load(context.Site.RootWeb.CurrentUser);
+            context.Load(context.Site.Owner);
+            context.Load(context.Site.RootWeb.CurrentUser);
             context.ExecuteQuery();
             context.Site.Owner = context.Site.RootWeb.CurrentUser;
             context.ExecuteQuery();
