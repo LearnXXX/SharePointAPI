@@ -12,6 +12,9 @@
         public static void Test1(ClientContext context)
         {
             var list = context.Web.Lists.GetByTitle("List2");
+            list.DefaultView.ViewFields.MoveFieldTo("AAA", 1);
+            list.DefaultView.Update();
+            context.ExecuteQuery();
             context.Load(list.Views);
             context.ExecuteQuery();
             foreach (var view in list.Views)

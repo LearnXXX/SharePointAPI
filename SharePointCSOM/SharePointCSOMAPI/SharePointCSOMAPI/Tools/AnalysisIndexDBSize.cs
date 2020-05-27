@@ -83,15 +83,15 @@ namespace SharePointCSOMAPI.Tools
             var dbConnection = providerFactory.CreateConnection();
             dbConnection.ConnectionString = connectionString;
             dbConnection.Open();
-            AnalysisTableV2(dbConnection, "tb_body_index");
-            AnalysisTableV2(dbConnection, "tb_head_index");
+            AnalysisTableV2(dbConnection, "tb_container_index");
+            AnalysisTableV2(dbConnection, "tb_item_index");
             //AnalysisTable(dbConnection, "tb_body_index");
             //AnalysisTable(dbConnection, "tb_head_index");
         }
 
         private static void AnalysisTableV2(DbConnection dbConnection, string tableName)
         {
-            var tableColumnMapping = InitlizetableColumnMapping(dbConnection, "tb_body_index");
+            var tableColumnMapping = InitlizetableColumnMapping(dbConnection, tableName);
 
             var queryString = new StringBuilder($"SELECT ");
             foreach (var column in tableColumnMapping)
@@ -242,7 +242,7 @@ namespace SharePointCSOMAPI.Tools
                 var percent = Math.Round(((double)(data.Value * 100)) / (double)total, 2);
                 stringBuilder.AppendLine($"{data.Key}: {percent}%");
             }
-            System.IO.File.WriteAllText($@"C:\Users\xluo\Desktop\{tableName}Report.txt", stringBuilder.ToString());
+            System.IO.File.WriteAllText($@"D:\Exchange Index\{tableName}Report.txt", stringBuilder.ToString());
 
         }
 

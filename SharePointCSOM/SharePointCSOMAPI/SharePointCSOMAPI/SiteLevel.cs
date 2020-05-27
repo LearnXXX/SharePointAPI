@@ -9,6 +9,14 @@ namespace SharePointCSOMAPI
 {
     class SiteLevel
     {
+
+        public static void LoadSiteProperties(ClientContext context)
+        {
+            context.Load(context.Site);
+            context.Load(context.Web);
+            context.ExecuteQuery();
+        }
+
         public static void GetSiteUserAndGroups(ClientContext context)
         {
             ////var user = context.Web.EnsureUser("i:0#.f|membership|admin@m365x157144.onmicrosoft.com");

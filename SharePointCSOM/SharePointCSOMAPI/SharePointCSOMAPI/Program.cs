@@ -5,6 +5,7 @@ using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Taxonomy;
 using Newtonsoft.Json;
 using SharePointCSOMAPI.Tools;
+using SharePointCSOMAPI.Tools.PEQA;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,11 +24,12 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        //private static string siteUrl = "https://xluov-admin.sharepoint.com";
+        private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
         //private static string siteUrl = "https://wrappertest-my.sharepoint.com/personal/clxiong_wrappertest_onmicrosoft_com";
-        private static string siteUrl = "https://mydevo365.sharepoint.com/sites/Test7";
-        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test2";
+        //private static string siteUrl = "https://mydevo365.sharepoint.com/sites/Test7";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
         //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
         //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest4";
         //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoGroup1";
@@ -36,12 +38,20 @@ namespace SharePointCSOMAPI
         //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
         //private static string userName = "aosiptest@longgod.onmicrosoft.com";
         //private static string password = "demo12!@";
-        private static string userName = "admin@mydevo365.onmicrosoft.com";
-        private static string password = "Shenmemima???2";
+        //private static string userName = "admin@mydevo365.onmicrosoft.com";
+        //private static string password = "Shenmemima???2";
         //private static string userName = "clxiong@wrappertest.onmicrosoft.com";
         //private static string password = "1qaz2wsx!@QW";
         //private static string userName = "admin@M365x157144.onmicrosoft.com";
         //private static string password = "X60LyQ995R";
+
+        private static string userName = "xluo@xluov.onmicrosoft.com";
+        private static string password = "demo12!@QW";
+
+
+        //private static string userName = "fay@apgcchtest.onmicrosoft.us";
+        //private static string password = "demo12!@";
+
         private static TokenHelper tokenHelper = new TokenHelper();
 
         private static void ArgTest(int number)
@@ -70,83 +80,91 @@ namespace SharePointCSOMAPI
 
         static void Main(string[] args)
         {
-            AnalysisIndexDBSize.Start(@"C:\Users\xluo\Desktop\index280499016_d\index280499016_d.db");
-            //AnalysisIndexDBSize.Start(@"C:\Users\xluo\Desktop\index1630b7135513af8f13c78933da62b9fc.db");
+            SiteTool.Run(args);
 
-            Workflow.Load13ModeWorklfow(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password)); 
-            FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //FileLevel.GetFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //AnalysisIndexDBSize.Start(@"D:\Exchange Index\indexb4dbad7758dc79d0ba2032e43fc87f5c_d.db");
+            //UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //ViewLevel.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //AnalysisIndexDBSize.Start(@"C:\Users\xluo\Desktop\indexf0a006eb76b59a36621c941ca77f72f5 - Copy.db");
             //ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            var value = GetColumnName("OData__x005f_ModerationStatus");
-            Process proc = Process.GetCurrentProcess();
-            var meoryery = proc.PrivateMemorySize64;
-            WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
-            FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             //SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+
+
+            //Workflow.Load13ModeWorklfow(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password)); 
             //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            //TenantLevel.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            var uri = new Uri("https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com");
-            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password), string.Format("{0}/{1}", siteUrl, "SiteAssets"));
-            ViewLevel.CreateViewWithBaseViewId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            ViewLevel.UpdateContentTypeId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            OpenXmlTest.Test();
-            var datsdfe = DateTime.FromOADate(43794.2714930556);
+            //ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ////ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //var value = GetColumnName("OData__x005f_ModerationStatus");
+            //Process proc = Process.GetCurrentProcess();
+            //var meoryery = proc.PrivateMemorySize64;
+            //WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
+            //FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //ListItemLevel.LoadItemProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ////SiteLevel.GetSiteUserAndGroups(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ////FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            ////TenantLevel.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //FileLevel.LoadFileProperties(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //UserLevel.SiteUsers(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //FolderLevel.CreateMultiFolders(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //var uri = new Uri("https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com");
+            //SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password), string.Format("{0}/{1}", siteUrl, "SiteAssets"));
+            //ViewLevel.CreateViewWithBaseViewId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //ViewLevel.UpdateContentTypeId(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //OpenXmlTest.Test();
+            //var datsdfe = DateTime.FromOADate(43794.2714930556);
 
-            WebLevel.GetLitByTitle(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //WebLevel.GetLitByTitle(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
 
-            var guid = Guid.NewGuid();
+            //var guid = Guid.NewGuid();
 
-            Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-            int number = int.MaxValue;
-            ArgTest(number -= 1);
-            try
-            {
-                var date = new DateTime(1563418812947);
-                Initalize();
+            //Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //int number = int.MaxValue;
+            //ArgTest(number -= 1);
+            //try
+            //{
+            //    var date = new DateTime(1563418812947);
+            //    Initalize();
 
-                //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                if (args.Length == 0)
-                {
-                    ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //FolderLevel.FolderTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //HtmlTest();
-                    //var text = System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\111.txt");
-                    //var result = System.Web.HttpUtility.HtmlDecode(text);
+            //    //FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //    //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //    //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //    if (args.Length == 0)
+            //    {
+            //        ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //Navigation.NavigationTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //FolderLevel.FolderTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //HtmlTest();
+            //        //var text = System.IO.File.ReadAllText(@"C:\Users\xluo\Desktop\111.txt");
+            //        //var result = System.Web.HttpUtility.HtmlDecode(text);
 
-                    //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForAppToken(siteUrl));
-                    //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //UserLevel.GetUserByLoginName(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //MetadataService.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                    //WebLevel.GetAllListsInWeb(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
-                }
-                else
-                {
+            //        //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForAppToken(siteUrl));
+            //        //SiteLevel.GetSiteSize(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //UserLevel.GetUserByLoginName(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //MetadataService.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //        //WebLevel.GetAllListsInWeb(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            //    }
+            //    else
+            //    {
 
-                    Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
-                    {
-                        //UpdateFileDateTimeColumnValue.RunForLargeList(o);
-                        UpdateFileDateTimeColumnValue.Run(o);
-                        //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
-                        //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
-                    });
+            //        Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
+            //        {
+            //            //UpdateFileDateTimeColumnValue.RunForLargeList(o);
+            //            UpdateFileDateTimeColumnValue.Run(o);
+            //            //UpdateFileDateTimeColumnValue.Update(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
+            //            //ScanSubSiteDocumentLibrary.Scan(tokenHelper.GetClientContextForServiceAccount(o.SiteUrl, o.UserName, o.Password));
+            //        });
 
-                }
-            }
-            catch (Exception e)
-            {
-                logger.ErrorFormat("An error occurred: {0}", e);
-            }
-            logger.Info("Press any key to esc...");
-            Console.ReadKey();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    logger.ErrorFormat("An error occurred: {0}", e);
+            //}
+            //logger.Info("Press any key to esc...");
+            //Console.ReadKey();
         }
         private static void HtmlTest()
         {

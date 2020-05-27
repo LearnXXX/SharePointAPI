@@ -9,6 +9,13 @@ namespace SharePointCSOMAPI
 {
     class FileLevel
     {
+        public static void GetFiles(ClientContext context)
+        {
+            var file = context.Site.RootWeb.GetFileByServerRelativeUrl(@"/personal/xluo1_xluov_onmicrosoft_com/Documents\10081");
+            context.Load(file);
+            context.ExecuteQuery();
+
+        }
         public static void LoadFileProperties(ClientContext context)
         {
             var list = context.Site.RootWeb.Lists.GetByTitle("DeltaTest");
