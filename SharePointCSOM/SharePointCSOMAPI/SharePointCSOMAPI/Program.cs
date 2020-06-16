@@ -8,6 +8,7 @@ using SharePointCSOMAPI.Tools;
 using SharePointCSOMAPI.Tools.PEQA;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,11 +25,11 @@ namespace SharePointCSOMAPI
     class Program
     {
         private static ILog logger = LogManager.GetLogger(typeof(Program));
-        private static string siteUrl = "https://xluov-admin.sharepoint.com";
+        //private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
         //private static string siteUrl = "https://wrappertest-my.sharepoint.com/personal/clxiong_wrappertest_onmicrosoft_com";
         //private static string siteUrl = "https://mydevo365.sharepoint.com/sites/Test7";
-        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
+        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
         //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
         //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest4";
@@ -46,7 +47,7 @@ namespace SharePointCSOMAPI
         //private static string password = "X60LyQ995R";
 
         private static string userName = "xluo@xluov.onmicrosoft.com";
-        private static string password = "demo12!@QW";
+        private static string password = "demo65^%";
 
 
         //private static string userName = "fay@apgcchtest.onmicrosoft.us";
@@ -78,9 +79,36 @@ namespace SharePointCSOMAPI
             return GetColumnName(value);
         }
 
+        [AttributeUsage(AttributeTargets.Class)]
+        public class TableAttribute : Attribute
+        {
+            public string TableName { get; set; }
+
+            public TableAttribute(string tableName)
+            {
+                TableName = tableName;
+            }
+        }
+        [Table("123")]
+        public class TestC
+        {
+
+        }
         static void Main(string[] args)
         {
-            SiteTool.Run(args);
+            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password),"");
+            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            AddMultipleItems.Run(args);
+
+            //var ca = TypeDescriptor.GetAttributes(typeof(TestC))
+            // .OfType<TableAttribute>().FirstOrDefault();
+            //Console.WriteLine(ca.TableName); // <=== nice
+            //TypeDescriptor.AddAttributes(typeof(TestC), new TableAttribute("naughty"));
+            //ca = TypeDescriptor.GetAttributes(typeof(TestC))
+            //      .OfType<TableAttribute>().FirstOrDefault();
+            //Console.WriteLine(ca.TableName); // <=== naughty
+
+            //SiteTool.Run(args);
 
             //FileLevel.GetFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
             //AnalysisIndexDBSize.Start(@"D:\Exchange Index\indexb4dbad7758dc79d0ba2032e43fc87f5c_d.db");

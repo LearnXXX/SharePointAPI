@@ -213,6 +213,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteLevel.cs" />
     <Compile Include="Tools\AnalysisIndexDBSize.cs" />
+    <Compile Include="Tools\PEQA\AddMultipleItems.cs" />
+    <Compile Include="Tools\PEQA\AddMultipleItemsOptions.cs" />
     <Compile Include="Tools\PEQA\SiteTool.cs" />
     <Compile Include="Tools\PEQA\SiteToolOptions.cs" />
     <Compile Include="Tools\StopListInheritingPermissions\StopListInheritingPermissions.cs" />

@@ -11,7 +11,9 @@ namespace SharePointCSOMAPI
     {
         public static bool CheckListExist(ClientContext context, string listUrl)
         {
-            
+            var file = context.Web.GetFileByServerRelativePath(ResourcePath.FromDecodedUrl("/sites/Test5/Shared Documents/20200611142343.txt"));
+            context.Load(file);
+            context.ExecuteQuery();
             bool siteAssetsExist = false;
             List list = null;
             ExceptionHandlingScope scope = new ExceptionHandlingScope(context);
@@ -45,7 +47,7 @@ namespace SharePointCSOMAPI
 
         public static void GetLitByTitle(ClientContext context)
         {
-            context.Load(context.Web.Lists,lists=>lists.Include(l=>l.Title));
+            context.Load(context.Web.Lists, lists => lists.Include(l => l.Title));
             context.ExecuteQuery();
             foreach (var temp in context.Web.Lists)
             {

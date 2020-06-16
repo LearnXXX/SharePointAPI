@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace SharePointCSOMAPI.Tools.PEQA
 {
+
+    
     class SiteTool
     {
         private static ILog logger = LogManager.GetLogger(typeof(ScanSubSiteDocumentLibrary));
@@ -38,11 +40,17 @@ namespace SharePointCSOMAPI.Tools.PEQA
 
         private static bool IsSiteExist(ClientContext context, Tenant tenant, string siteUrl)
         {
-            var newSiteProps = tenant.GetSitePropertiesFromSharePointByFilter(string.Format("Url -eq '{0}'", System.Web.HttpUtility.UrlPathEncode(siteUrl)), "0", false);
-            context.Load(newSiteProps);
-            context.ExecuteQuery();
-            bool siteExist = newSiteProps.Count > 0;
-            return siteExist;
+            try
+            {
+                var newSiteProps = tenant.GetSitePropertiesByUrl(siteUrl, false);
+                context.Load(newSiteProps);
+                context.ExecuteQuery();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public static void WaitSiteCreateFinished(ClientContext context, Tenant tenant, List<string> siteUrls)
         {
@@ -57,10 +65,9 @@ namespace SharePointCSOMAPI.Tools.PEQA
                     try
                     {
                         System.Threading.Thread.Sleep(10000);
-                        var newSiteProps = tenant.GetSitePropertiesFromSharePointByFilter(string.Format("Url -eq '{0}'", System.Web.HttpUtility.UrlPathEncode(siteUrl)), "0", false);
-                        context.Load(newSiteProps);
+                        siteProperties = tenant.GetSitePropertiesByUrl(siteUrl, false);
+                        context.Load(siteProperties);
                         context.ExecuteQuery();
-                        siteProperties = newSiteProps.FirstOrDefault();
                         if (siteProperties != null)
                         {
                             logger.InfoFormat("Site Collection Url: {0}, Site Collection Status:{1}", siteUrl, siteProperties.Status);
@@ -81,6 +88,7 @@ namespace SharePointCSOMAPI.Tools.PEQA
         public static void CreateMultipleSiteCollections(SiteToolOptions option)
         {
             var context = tokenHelper.GetClientContextForServiceAccount(option.AdminUrl, option.UserName, option.Password);
+            context.RequestTimeout = 6000 * 1000;
             Tenant tenant = new Tenant(context);
             var creatingSites = new List<string>();
             for (int index = 1; index <= option.Count; index++)

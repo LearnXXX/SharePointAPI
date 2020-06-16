@@ -28,6 +28,9 @@ namespace SharePointCSOMAPI
         }
         public static void GetSiteOwner(ClientContext context)
         {
+            var user = context.Site.RootWeb.EnsureUser("c:0t.c|tenant|60dbc52e-a24d-4201-8da2-f9fd969e462a");
+            context.Load(user);
+            context.ExecuteQuery();
             context.Load(context.Site.Owner);
             context.Load(context.Site.RootWeb.CurrentUser);
             context.ExecuteQuery();
