@@ -16,13 +16,15 @@ namespace SharePointRestAPI
         {
             WebRequest.DefaultWebProxy = new WebProxy("127.0.0.1", 8888);
 
-            var sharepointUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
+            var siteUrl = "";
+
             var listRetrievalCount = 0;
+            var resourceUrl = "";//site host: example: https://abc.sharepoint.com/   https://abc-my.sharepoint.com/
             //经测试 只有Bearer token 才好用，cookies方式使用$branch方式会出错
-            var accessToken = Authentication.GetAccessTokenByCertificateV2("https://m365x157144-my.sharepoint.com/", "b4b8748a-a573-4e49-8665-3a632b65a60c", "50927317-52bf-40c0-a4f1-9f19d04049a0", new X509Certificate2(System.IO.File.ReadAllBytes(@"C:\Users\xluo\Desktop\XluoCert.pfx"), "demo12!@"));
+            var accessToken = Authentication.GetAccessTokenByCertificateV2(resourceUrl, "b4b8748a-a573-4e49-8665-3a632b65a60c", "50927317-52bf-40c0-a4f1-9f19d04049a0", new X509Certificate2(System.IO.File.ReadAllBytes(@"C:\Users\xluo\Desktop\XluoCert.pfx"), "demo12!@"));
             
             // Create the parent request
-            var batchRequest = new BatchODataRequest(String.Format("{0}/_api/", sharepointUrl)); // ctor adds "$batch"
+            var batchRequest = new BatchODataRequest(String.Format("{0}/_api/", siteUrl)); // ctor adds "$batch"
             batchRequest.SetHeader("Authorization", "Bearer " + accessToken);
             //batchRequest.Cookie = cookies;
             using (var oDataMessageWriter = new ODataMessageWriter(batchRequest))
@@ -32,11 +34,11 @@ namespace SharePointRestAPI
 
                 // Create the two child query operations.
                 oDataBatchWriter.CreateOperationRequestMessage(
-                     "GET", new Uri(sharepointUrl.ToString() + "/_api/Web/lists/getbytitle('Composed Looks')/items?$select=Title"));
+                     "GET", new Uri(siteUrl.ToString() + "/_api/Web/lists/getbytitle('Composed Looks')/items?$select=Title"));
                 listRetrievalCount++;
 
                 oDataBatchWriter.CreateOperationRequestMessage(
-                   "GET", new Uri(sharepointUrl.ToString() + "/_api/Web/lists/getbytitle('User Information List')/items?$select=Title"));
+                   "GET", new Uri(siteUrl.ToString() + "/_api/Web/lists/getbytitle('User Information List')/items?$select=Title"));
                 listRetrievalCount++;
 
                 oDataBatchWriter.WriteEndBatch();
