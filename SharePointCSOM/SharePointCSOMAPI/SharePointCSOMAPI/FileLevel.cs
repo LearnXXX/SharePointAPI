@@ -11,8 +11,9 @@ namespace SharePointCSOMAPI
     {
         public static void GetFiles(ClientContext context)
         {
-            var file = context.Site.RootWeb.GetFileByServerRelativeUrl(@"/personal/xluo1_xluov_onmicrosoft_com/Documents\10081");
+            var file = context.Site.RootWeb.GetFileByServerRelativeUrl(@"/personal/xluo3_xluov_onmicrosoft_com/Documents/New Text Document.txt");
             context.Load(file);
+            context.Load(file.ListItemAllFields);
             context.ExecuteQuery();
 
         }

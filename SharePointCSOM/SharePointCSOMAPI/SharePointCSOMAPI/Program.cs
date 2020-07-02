@@ -27,31 +27,10 @@ namespace SharePointCSOMAPI
         private static ILog logger = LogManager.GetLogger(typeof(Program));
         //private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
-        //private static string siteUrl = "https://wrappertest-my.sharepoint.com/personal/clxiong_wrappertest_onmicrosoft_com";
-        //private static string siteUrl = "https://mydevo365.sharepoint.com/sites/Test7";
-        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
+        private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo3_xluov_onmicrosoft_com";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
-        //private static string siteUrl = "https://m365x157144-my.sharepoint.com/personal/admin_m365x157144_onmicrosoft_com";
-        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoTest4";
-        //private static string siteUrl = "https://m365x157144.sharepoint.com/sites/XluoGroup1";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
-        //private static string siteUrl = "https://longgod.sharepoint.com/sites/XluoTest1";
-        //private static string siteUrl = "https://longgod-my.sharepoint.com/personal/long_longgod_onmicrosoft_com";
-        //private static string userName = "aosiptest@longgod.onmicrosoft.com";
-        //private static string password = "demo12!@";
-        //private static string userName = "admin@mydevo365.onmicrosoft.com";
-        //private static string password = "Shenmemima???2";
-        //private static string userName = "clxiong@wrappertest.onmicrosoft.com";
-        //private static string password = "1qaz2wsx!@QW";
-        //private static string userName = "admin@M365x157144.onmicrosoft.com";
-        //private static string password = "X60LyQ995R";
-
-        private static string userName = "xluo@xluov.onmicrosoft.com";
-        private static string password = "demo65^%";
-
-
-        //private static string userName = "fay@apgcchtest.onmicrosoft.us";
-        //private static string password = "demo12!@";
 
         private static TokenHelper tokenHelper = new TokenHelper();
 
@@ -96,8 +75,9 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
-            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password),"");
-            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, userName, password));
+            FileLevel.GetFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl,SPUsers.UserName, SPUsers.Password));
+            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password),"");
+            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
             AddMultipleItems.Run(args);
 
             //var ca = TypeDescriptor.GetAttributes(typeof(TestC))
