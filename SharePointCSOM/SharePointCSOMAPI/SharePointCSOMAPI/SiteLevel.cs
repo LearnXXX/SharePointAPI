@@ -26,8 +26,25 @@ namespace SharePointCSOMAPI
             context.Load(context.Web.SiteUsers);
             context.ExecuteQuery();
         }
+        public static void Test1(ClientContext context)
+        {
+            var list = context.Web.Lists.GetByTitle("wfsvc");
+            context.Load(list);
+            context.Load(list.RootFolder);
+            context.ExecuteQuery();
+        }
+
+
         public static void GetSiteOwner(ClientContext context)
         {
+
+            var owner = context.Site.RootWeb.EnsureUser("i:0#.f|membership|shuo.liu@lsazures.onmicrosoft.com");
+            context.Site.Owner = owner;
+            context.ExecuteQuery();
+            context.Site.RootWeb.AllProperties["1231234"] = "23566";
+            context.Site.RootWeb.Update();
+            context.ExecuteQuery();
+
             var user = context.Site.RootWeb.EnsureUser("c:0t.c|tenant|60dbc52e-a24d-4201-8da2-f9fd969e462a");
             context.Load(user);
             context.ExecuteQuery();

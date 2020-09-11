@@ -27,7 +27,9 @@ namespace SharePointCSOMAPI
         private static ILog logger = LogManager.GetLogger(typeof(Program));
         //private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
-        private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo3_xluov_onmicrosoft_com";
+        //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo3_xluov_onmicrosoft_com";
+        private static string siteUrl = "https://nicole123456.sharepoint.cn/sites/XLuoSite1";
+        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test6";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
@@ -75,9 +77,113 @@ namespace SharePointCSOMAPI
         }
         static void Main(string[] args)
         {
-            FileLevel.GetFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl,SPUsers.UserName, SPUsers.Password));
-            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password),"");
-            SiteLevel.GetSiteOwner(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            ListLevel.ListFieldTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+
+            List<string> countryList = new List<string>();
+            List<string> countryCodeList = new List<string>();
+            using (var countryReader = new StreamReader(@"C:\Users\xluo\Desktop\CountryName.txt"))
+            {
+                while (!countryReader.EndOfStream)
+                {
+                    countryList.Add(countryReader.ReadLine());
+                }
+            }
+            using (var countryCodeReader = new StreamReader(@"C:\Users\xluo\Desktop\CountryAlpha2Code.txt"))
+            {
+                while (!countryCodeReader.EndOfStream)
+                {
+                    countryCodeList.Add(countryCodeReader.ReadLine());
+                }
+            }
+
+            StringBuilder dicbuilder = new StringBuilder();
+
+            foreach (var country in countryList)
+            {
+                dicbuilder.Append("\"");
+                dicbuilder.Append(country);
+                dicbuilder.Append("\"");
+
+                dicbuilder.Append(",");
+            }
+            System.IO.File.WriteAllText(@"C:\Users\xluo\Desktop\countryCollection.txt", dicbuilder.ToString());
+            if (countryList.Count == countryCodeList.Count)
+            {
+                for (int i = 0; i < countryCodeList.Count; i++)
+                {
+                    dicbuilder.Append("{");
+                    dicbuilder.Append("\"");
+                    dicbuilder.Append(countryCodeList[i]);
+                    dicbuilder.Append("\"");
+
+                    dicbuilder.Append(",");
+
+                    dicbuilder.Append("\"");
+                    dicbuilder.Append(countryList[i]);
+
+                    dicbuilder.Append("\"");
+                    dicbuilder.Append("}");
+                    dicbuilder.Append(",");
+                    dicbuilder.AppendLine();
+
+                }
+            }
+            System.IO.File.WriteAllText(@"C:\Users\xluo\Desktop\countryCodeMapping.txt", dicbuilder.ToString());
+
+            XmlDocument document = new XmlDocument();
+            document.Load(@"C:\Users\xluo\Desktop\CurrencyList.xml");
+
+            var nodes = document.DocumentElement.SelectNodes(@"//CcyTbl/CcyNtry/Ccy");
+
+            StringBuilder sb = new StringBuilder();
+            List<string> lists = new List<string>();
+            foreach (XmlNode node in nodes)
+            {
+                if (lists.Contains(node.InnerText))
+                {
+                    continue;
+                }
+                lists.Add(node.InnerText);
+                sb.Append("\"");
+                sb.Append(node.InnerText);
+                sb.Append("\"");
+                sb.Append(",");
+            }
+            System.IO.File.WriteAllText(@"C:\Users\xluo\Desktop\currencycode.txt", sb.ToString());
+            ListLevel.LoadListProperty(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+
+            StringBuilder sbuilder = new StringBuilder();
+            using (var stream = new StreamReader(@"D:\CI\ADO-221141\sdemuca04943\error site.txt"))
+            {
+                while (!stream.EndOfStream)
+                {
+                    var temp = stream.ReadLine();
+                    var index = temp.IndexOf("https://");
+                    if (index > 0)
+                    {
+                        sbuilder.AppendLine(temp.Substring(index));
+                    }
+                }
+            }
+            UserLevel.ResolveUser(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+
+            ZipTester.DeleteTest();
+            ZipTester.CreateTest();
+            ZipHelper.Test();
+            SiteLevel.Test1(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            ZipHelper.ZipDirectory(@"C:\Users\xluo\Desktop\GzipTest", @"C:\Users\xluo\Desktop\test.zip");
+            CompressTester.Test();
+            FileLevel.Add1WFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            double d1 = .0;
+            for (int i = 1; i <= 11; i++)
+            {
+                d1 += .1;
+            }
+
+            double d2 = .1 * 11;
+            var boolValue = d1 == d2;
+            FileLevel.GetFiles(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            WebLevel.CheckListExist(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password), "");
             AddMultipleItems.Run(args);
 
             //var ca = TypeDescriptor.GetAttributes(typeof(TestC))

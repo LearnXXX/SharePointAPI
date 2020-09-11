@@ -55,6 +55,12 @@
       <HintPath>..\packages\HtmlAgilityPack.1.11.12\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ISO3166, Version=1.0.3.0, Culture=neutral, PublicKeyToken=8d672889792f7833, processorArchitecture=MSIL">
+      <HintPath>..\packages\ISO3166.1.0.3\lib\net20\ISO3166.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -172,6 +178,8 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.2.4\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -213,6 +221,7 @@
     <Compile Include="SiteLevel.cs" />
     <Compile Include="SPUsers.cs" />
     <Compile Include="Tools\AnalysisIndexDBSize.cs" />
+    <Compile Include="Tools\CompressTester.cs" />
     <Compile Include="Tools\PEQA\AddMultipleItems.cs" />
     <Compile Include="Tools\PEQA\AddMultipleItemsOptions.cs" />
     <Compile Include="Tools\PEQA\SiteTool.cs" />
@@ -225,6 +234,8 @@
     <Compile Include="Tools\Vivian Tools\Data\ListInfo.cs" />
     <Compile Include="Tools\Vivian Tools\ScanSubSiteDocumentLibrary.cs" />
     <Compile Include="Tools\UpdateListsViews.cs" />
+    <Compile Include="Tools\ZipHelper.cs" />
+    <Compile Include="Tools\ZipTester.cs" />
     <Compile Include="UserLevel.cs" />
     <Compile Include="Tools\CheckFilesExit.cs" />
     <Compile Include="Utility\SerializerHelper.cs" />
@@ -239,6 +250,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

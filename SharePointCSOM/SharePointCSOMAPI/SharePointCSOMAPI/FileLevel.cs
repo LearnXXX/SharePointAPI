@@ -1,6 +1,7 @@
 ﻿using Microsoft.SharePoint.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace SharePointCSOMAPI
 
         public static void Add1WFiles(ClientContext context)
         {
+            context.RequestTimeout = 10 * 60 * 1000;
             var list = context.Site.RootWeb.Lists.GetByTitle("Documents");
             context.Load(list);
             context.ExecuteQuery();
@@ -52,11 +54,11 @@ namespace SharePointCSOMAPI
             foreach (var folder in list.RootFolder.Folders)
             {
 
-                if (folder.ItemCount == 0&& folder.Name!= "Forms")
+                if (folder.ItemCount == 0 && folder.Name != "Forms")
                 {
-                    AddFiles(context, folder, 2000);
+                    AddFilesWithContents(context, folder, 2000);
                 }
-                
+
             }
             context.ExecuteQuery();
         }
@@ -76,6 +78,42 @@ namespace SharePointCSOMAPI
                     }
 
                     var info = new FileCreationInformation { Content = System.Text.Encoding.Default.GetBytes("1"), Url = date.ToString("yyyyMMddHHmmss") + ".txt", };
+                    var file = folder.Files.Add(info);
+                    //file.ListItemAllFields["UniqueNumber"] = Guid.NewGuid().ToString();
+                    file.ListItemAllFields.Update();
+
+                }
+                context.ExecuteQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        private static void AddFilesWithContents(ClientContext context, Folder folder, int count)
+        {
+            string data;
+            using (var reader = new StreamReader(@"C:\Users\xluo\Desktop\1.zip"))
+            {
+                data = reader.ReadToEnd();
+            }
+            AddFiles(context, folder, count, System.Text.Encoding.Default.GetBytes(data));
+        }
+        private static void AddFiles(ClientContext context, Folder folder, int count, byte[] contents)
+        {
+            DateTime date = DateTime.Now;
+            try
+            {
+                for (int index = 0; index < count; index++)
+                {
+                    date = date.AddHours(1);
+                    if (index % 2==0)
+                    {
+                        Console.WriteLine("index = {0},Date: {1}", index, date.Ticks);
+                        context.ExecuteQuery();
+                    }
+
+                    var info = new FileCreationInformation { Content = contents, Url = date.ToString("yyyyMMddHHmmss") + ".dat", };
                     var file = folder.Files.Add(info);
                     //file.ListItemAllFields["UniqueNumber"] = Guid.NewGuid().ToString();
                     file.ListItemAllFields.Update();

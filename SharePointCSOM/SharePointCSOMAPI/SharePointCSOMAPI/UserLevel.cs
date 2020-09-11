@@ -1,4 +1,6 @@
-﻿using Microsoft.SharePoint.Client;
+﻿using Microsoft.SharePoint.ApplicationPages.ClientPickerQuery;
+using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,32 @@ namespace SharePointCSOMAPI
 {
     class UserLevel
     {
+        public static void ResolveUser(ClientContext context)
+        {
+
+            string input = Guid.NewGuid().ToString();
+
+            var user = context.Web.EnsureUser(input);
+            context.Load(user);
+            context.ExecuteQuery();
+
+
+            ClientPeoplePickerQueryParameters searchParams = new ClientPeoplePickerQueryParameters()
+            {
+                AllowEmailAddresses = true,
+                AllowMultipleEntities = true,
+                QueryString = input,
+                Required = true,
+                PrincipalType = PrincipalType.SecurityGroup | PrincipalType.User,
+                PrincipalSource = PrincipalSource.All,
+                MaximumEntitySuggestions = 30
+            };
+            ClientResult<string> UserInfos = ClientPeoplePickerWebServiceInterface.ClientPeoplePickerResolveUser(context, searchParams);
+            context.ExecuteQuery();
+
+
+
+        }
         public static void SiteUsers(ClientContext context)
         {
             context.Load(context.Site.RootWeb.SiteUsers);
@@ -27,12 +55,12 @@ namespace SharePointCSOMAPI
             }
         }
 
-            public static void GetUserByLoginName(ClientContext context)
-            {
-                //var user = context.Site.RootWeb.SiteUsers.GetByLoginName((context.Credentials as SharePointOnlineCredentials).UserName);
-                var user = context.Site.RootWeb.SiteUsers.GetByLoginName("i:0#.f|membership|aosiptest@longgod.onmicrosoft.com");
-                context.Load(user);
-                context.ExecuteQuery();
-            }
+        public static void GetUserByLoginName(ClientContext context)
+        {
+            //var user = context.Site.RootWeb.SiteUsers.GetByLoginName((context.Credentials as SharePointOnlineCredentials).UserName);
+            var user = context.Site.RootWeb.SiteUsers.GetByLoginName("i:0#.f|membership|aosiptest@longgod.onmicrosoft.com");
+            context.Load(user);
+            context.ExecuteQuery();
         }
     }
+}
