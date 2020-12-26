@@ -14,7 +14,7 @@ namespace SharePointRestAPI
     class Program
     {
         #region https://xluov.sharepoint.com
-        private const string ClientId = "";
+        private const string ClientId = "ed438ecd-b165-4dd2-a681-ed55b25e7069";
         private const string TenantId = "1a58e338-5637-4e10-88ce-591844ee5470";
         #endregion
 

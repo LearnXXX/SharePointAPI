@@ -1,6 +1,7 @@
 ﻿using Microsoft.SharePoint.Client;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,24 @@ namespace SharePointCSOMAPI
 {
     class ListLevel
     {
+        public static List<dynamic> GetDynamics()
+        {
+            object o1 = new { ID = "1", JobTime = DateTime.Now.ToString() };
+            object o2 = new { ID = "1", JobTime = DateTime.Now.ToString() };
+            List<dynamic> datas = new List<dynamic>();
+            datas.Add(o1);
+            datas.Add(o2);
+            return datas;
+            return new List<dynamic> {
+                o1,o2
+                //new { ID = "1", JobTime = DateTime.Now.ToString() },
+                //new { ID = "1", JobTime = DateTime.Now.ToString() },
+                //new { ID = "1", JobTime = DateTime.Now.ToString() },
+                //new { ID = "1", JobTime = DateTime.Now.ToString() },
+            };
+        }
+
+        public static string[] CountryCollection = new string[] { "Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas (the)", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia (Plurinational State of)", "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory (the)", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands (the)", "Central African Republic (the)", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands (the)", "Colombia", "Comoros (the)", "Congo (the Democratic Republic of the)", "Congo (the)", "Cook Islands (the)", "Costa Rica", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Côte d'Ivoire", "Denmark", "Djibouti", "Dominica", "Dominican Republic (the)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands (the) [Malvinas]", "Faroe Islands (the)", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories (the)", "Gabon", "Gambia (the)", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See (the)", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea (the Democratic People's Republic of)", "Korea (the Republic of)", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic (the)", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands (the)", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia (Federated States of)", "Moldova (the Republic of)", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands (the)", "New Caledonia", "New Zealand", "Nicaragua", "Niger (the)", "Nigeria", "Niue", "Norfolk Island", "North Macedonia", "Northern Mariana Islands (the)", "Norway", "Oman", "Pakistan", "Palau", "Palestine, State of", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines (the)", "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Romania", "Russian Federation (the)", "Rwanda", "Réunion", "Saint Barthélemy", "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin (French part)", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Sint Maarten (Dutch part)", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Sudan", "Spain", "Sri Lanka", "Sudan (the)", "Suriname", "Svalbard and Jan Mayen", "Sweden", "Switzerland", "Syrian Arab Republic (the)", "Taiwan (Province of China)", "Tajikistan", "Tanzania, the United Republic of", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands (the)", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates (the)", "United Kingdom of Great Britain and Northern Ireland (the)", "United States Minor Outlying Islands (the)", "United States of America (the)", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela (Bolivarian Republic of)", "Viet Nam", "Virgin Islands (British)", "Virgin Islands (U.S.)", "Wallis and Futuna", "Western Sahara*", "Yemen", "Zambia", "Zimbabwe", "Åland Islands", };
         private static Field CreateSingleLineTextFiled(List list, string internalName, string title)
         {
             return list.Fields.AddFieldAsXml($"<Field Type='User'  Name='{internalName}' StaticName='{internalName}' DisplayName='{title}'/>", true, AddFieldOptions.AddFieldInternalNameHint | AddFieldOptions.AddFieldToDefaultView);
@@ -18,13 +37,71 @@ namespace SharePointCSOMAPI
         {
             return new List<string> { "1", "1", "1", "1", };
         }
+
+        public static void AddPermissionItem(ClientContext context)
+        {
+            var list = context.Web.Lists.GetByTitle("Permission Management");
+            var newItem = list.AddItem(new ListItemCreationInformation());
+            newItem["LMSEditPermissionGroup"] = new FieldLookupValue { LookupId = 6 };
+            newItem["LMSReadPermissionGroup"] = new FieldLookupValue { LookupId = 6 };
+            newItem["LMSCountry"] = CountryCollection;
+            newItem.Update();
+            context.ExecuteQuery();
+        }
+        public static void LMSListTest(ClientContext context)
+        {
+
+            var settings = context.Web.RegionalSettings;
+            context.Load(settings, s => s.LocaleId, s => s.TimeZone);
+            context.ExecuteQuery();
+            var bias = context.Web.RegionalSettings.TimeZone.Information.Bias;
+            CultureInfo culture = new CultureInfo((int)settings.LocaleId);
+
+            var list = context.Web.Lists.GetByTitle("PPP");
+
+            var item0 = list.GetItemById(0);
+            context.Load(item0);
+            context.ExecuteQuery();
+
+            context.Load(list);
+            context.Load(list.Fields);
+            context.ExecuteQuery();
+            var item716 = list.GetItemById(716);
+            var item718 = list.GetItemById(718);
+            context.Load(item716);
+            context.Load(item718);
+            context.ExecuteQuery();
+        }
         public static void ListFieldTest(ClientContext context)
         {
-            var lll = context.Web.Lists.GetByTitle("Contract Ledger");
-            var column = lll.Fields.GetFieldByInternalName("LMSChanges");
+
+            var sdada = "{\"additionalRowClass\":{\"operator\":\":\",\"operands\":[{\"operator\":\"!=\",\"operands\":[\"[${0}]\",\"ACTIVE\"]},\"sp-css-backgroundColor-blockingBackground50\",\"\"]},\"rowClassTemplateId\":\"ConditionalView\"}";
+            var tl = context.Web.Lists.GetByTitle("Contract Ledger");
+            context.Load(tl.DefaultView);
+            context.ExecuteQuery();
+
+            context.Load(context.Site);
+            context.ExecuteQuery();
+            context.Site.DisableAppViews = true;
+            context.Site.DisableFlows = true;
+            context.ExecuteQuery();
+            var itemsss = tl.GetItems(new CamlQuery { ViewXml = $"<View Scope='RecursiveAll'><Query><Where><IsNotNull><FieldRef Name='LMSEDIContractID' /></IsNotNull></Where></Query><RowLimit>30</RowLimit></View>" });
+            context.Load(itemsss);
+            context.ExecuteQuery();
+            AddPermissionItem(context);
+            var date = Convert.ToDateTime("2020-09-15T16:00:00.000Z");
+            //context.Load(context.Web.RegionalSettings.TimeZone);
+            //context.ExecuteQuery();
+            var utcDate = context.Web.RegionalSettings.TimeZone.LocalTimeToUTC(date);
+            context.ExecuteQuery();
+            //AddPermissionItem(context);
+            var lll = context.Web.Lists.GetByTitle("Sync Logs");
+            context.Load(lll, l => l.DefaultView.ViewFields);
+            context.ExecuteQuery();
+            var column = lll.Fields.GetFieldByInternalName("ccc");
             context.Load(column);
             context.ExecuteQuery();
-            var tempItem2= lll.GetItemById(590);
+            var tempItem2 = lll.GetItemById(590);
             tempItem2["LMSContractDescription"] = null;
             tempItem2.Update();
             context.ExecuteQuery();
@@ -110,7 +187,16 @@ namespace SharePointCSOMAPI
         }
         public static void GetItemsTest(ClientContext context)
         {
-            var list = context.Web.Lists.GetByTitle("InternalNameTest");
+            var list = context.Web.Lists.GetByTitle("Contract Ledger");
+            //var tempItem = list.GetItemById(591);
+            var tempItem = list.GetItemById(590);
+            context.Load(tempItem);
+            context.ExecuteQuery();
+            var date = (DateTime)tempItem["LMSContractSigningDate"];
+
+            var tempDate = "2020-10-6";
+            //tempItem["LMSContractSigningDate"] = 
+
             var field = list.Fields.GetByTitle("Loan NO.");
             context.Load(field);
             context.ExecuteQuery();

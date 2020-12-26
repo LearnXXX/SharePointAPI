@@ -1,12 +1,15 @@
-﻿using CommandLine;
+﻿using Aspose.Cells;
+using CommandLine;
 using HtmlAgilityPack;
 using log4net;
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Taxonomy;
 using Newtonsoft.Json;
+using NPOI.HSSF.UserModel;
 using SharePointCSOMAPI.Tools;
 using SharePointCSOMAPI.Tools.PEQA;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -28,8 +31,10 @@ namespace SharePointCSOMAPI
         //private static string siteUrl = "https://xluov-admin.sharepoint.com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo3_xluov_onmicrosoft_com";
-        private static string siteUrl = "https://nicole123456.sharepoint.cn/sites/XLuoSite1";
-        //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test6";
+        //private static string siteUrl = "https://812321027.sharepoint.cn/sites/QA3";
+        //private static string siteUrl = "https://812321027.sharepoint.cn/";
+        //private static string siteUrl = "https://m365x522548.sharepoint.com/sites/Test1";
+        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test6";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
@@ -75,9 +80,55 @@ namespace SharePointCSOMAPI
         {
 
         }
+        public static void NPOITest()
+        {
+            using (var stream = System.IO.File.Open(@"C:\Users\xluo\Desktop\New Text Document.csv", FileMode.Open))
+            {
+
+
+                Workbook workbook = new Workbook(stream);
+                Worksheet sheet = workbook.Worksheets[0];
+                var ddd = sheet.Cells[0, 0];
+
+
+            }
+        }
+        private static void MethodTest()
+        {
+            var recordIds = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            int index = 0;
+            while (index < recordIds.Count())
+            {
+                var currentIds = recordIds.Skip(index).Take(1);
+                index += currentIds.Count();
+            }
+        }
+       
         static void Main(string[] args)
         {
-            ListLevel.ListFieldTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            var succeedsIds = new List<string> { "1", "2" };
+            StringBuilder sb1 = new StringBuilder();
+            succeedsIds.ForEach(contactId => sb1.AppendFormat("contactId = '{0}' or ",contactId));
+            sb1.Length -= 3;
+            var dddssds = sb1.ToString();
+            List<dynamic> datas = new List<dynamic>();
+            for (int i = 0; i <= 1; i++)
+            {
+                datas.AddRange(ListLevel.GetDynamics());
+            }
+            datas.Sort((first, second) =>
+            {
+                return string.Compare(first.JobTime.ToString(), second.JobTime.ToString());
+            });
+            MethodTest();
+            string currentPath = @"C:\DocAve Backup for Salesforce\";
+            var ddddssss = currentPath.Substring(0, currentPath.LastIndexOf("\\"));
+            //AddMultipleItems.Run(args);
+            //return;
+            //Workflow.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            ListLevel.LMSListTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            ListLevel.AddPermissionItem(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            UtilityLevevl.SendEmail(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
 
             List<string> countryList = new List<string>();
             List<string> countryCodeList = new List<string>();

@@ -31,6 +31,9 @@ namespace SharePointCSOMAPI.Tools.PEQA
         [Option('k', "KeyWord", Required = true, HelpText = "Input key word to search site collection")]
         public string KeyWord { get; set; }
 
+        [Option('l', "LimiteCount", Required = false, HelpText = "Input limite count to limite the count of site collection")]
+        public int LimiteCount { get; set; }
+
     }
     public static class AddMultipleItemsOptionsExtention
     {

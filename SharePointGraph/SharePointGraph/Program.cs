@@ -22,11 +22,11 @@ namespace SharePointGraph
 {
     class Program
     {
-        private const string ClientId = "";
+        private const string ClientId = "45d6d2e3-f4c2-4af3-9d50-79129c7e3645";
         private const string TenantId = "65001581-c366-4764-80ab-aef9bc86ecca";
         private const string ClientSecret = "64f=:]DsKCoZP9kfXJlw1EpTRwDn?N6M";
 
-        private const string XLUOVClientId = "";
+        private const string XLUOVClientId = "ed438ecd-b165-4dd2-a681-ed55b25e7069";
         private const string XLUOVTenantId = "1a58e338-5637-4e10-88ce-591844ee5470";
         static X509Certificate2 LoadCertificate()
         {
@@ -158,6 +158,9 @@ namespace SharePointGraph
         }
         static void Main(string[] args)
         {
+            IEqualityComparer<string> ssss = null;
+            Dictionary<string, string> ddddddd = new Dictionary<string, string>(ssss);
+            ddddddd.Add("sdfsd",null);
             WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
             GraphAPITester tester = new GraphAPITester(XLUOVClientId, XLUOVTenantId, GetGraphCertificate());
             var w = Stopwatch.StartNew();

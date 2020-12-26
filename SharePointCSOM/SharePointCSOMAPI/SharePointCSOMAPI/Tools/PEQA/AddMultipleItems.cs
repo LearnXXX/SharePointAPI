@@ -62,10 +62,17 @@ namespace SharePointCSOMAPI.Tools.PEQA
                     siteUrls.Add(siteProperty.Url.TrimEnd('/'));
                 }
                 tempIndex = sitePropertyEnum.NextStartIndexFromSharePoint;
+                if (option.LimiteCount > 0 && siteUrls.Count >= option.LimiteCount)
+                {
+                    logger.Info($"stop search site collections with {option.KeyWord}, beacuse site collection count exceed {option.LimiteCount}");
+                    break;
+                }
             }
             while (tempIndex != null);
-            logger.Info($"Finish searh site collections with {option.KeyWord}, site collection count: {siteUrls.Count}");
-            return siteUrls;
+            logger.Info($"Finish searh site collections with {option.KeyWord}, site collection count: {siteUrls.Count}, limite count: {option.LimiteCount}");
+
+            return option.LimiteCount > 0 ? siteUrls.Take(option.LimiteCount).ToList() : siteUrls;
+
         }
 
         public static void Run(AddMultipleItemsOptions option)
