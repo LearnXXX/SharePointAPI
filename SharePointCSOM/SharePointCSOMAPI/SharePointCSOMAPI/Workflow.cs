@@ -38,6 +38,41 @@ namespace SharePointCSOMAPI
             }
 
         }
+        public static void WFSVCListTest(ClientContext context)
+        {
+             var list = context.Web.GetListByTitle("wfsvc");
+            context.Load(list);
+            context.ExecuteQuery();
+            list.Update();
+            context.ExecuteQuery();
+        }
+        public static void Get13ModeWorkflow(ClientContext context)
+        {
+            //var info = context.GetFormDigestDirect();
+            var workflowServicesManager = new WorkflowServicesManager(context, context.Web);
+            var deploymentService = workflowServicesManager.GetWorkflowDeploymentService();
+            var workflowDefinitions = deploymentService.EnumerateDefinitions(false);
+
+            //only load what we need
+            context.Load(workflowDefinitions, a => a.Include(
+                                                    b => b.Description,
+                                                    b => b.Id,
+                                                    b => b.Published,
+                                                    b => b.RestrictToScope,
+                                                    b => b.RestrictToType,
+                                                    b => b.DisplayName,
+                                                    b => b.Properties));
+            context.ExecuteQuery();
+            var workflowId = new Guid("0f2cbcb4-5a0c-4c5a-b332-8f1e3c3aa04f");
+            foreach (var wf in workflowDefinitions)
+            {
+                if (wf.Id == workflowId)
+                {
+
+                }
+            }
+
+        }
         public static void Load13ModeWorklfow(ClientContext context)
         {
             var file = context.Web.GetFileByUrl("/sites/Test7/wfsvc/892036153093485d847117338349817b/WorkflowAssociation_84713e587b7a464d8650bdce3b5f1b8c");

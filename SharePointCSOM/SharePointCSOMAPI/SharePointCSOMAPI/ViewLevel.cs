@@ -5,10 +5,39 @@
     using System;
     using System.Linq;
     using System.Text;
+    using System.Xml;
     using System.Xml.Linq;
 
     class ViewLevel
     {
+        public static void CalendarViewTest(ClientContext context)
+        {
+            var list1 = context.Web.Lists.GetByTitle("Calendar3");
+            var view = list1.Views.GetByTitle("Calendar");
+            var view2 = list1.Views.GetByTitle("TestCalendar");
+            context.Load(view);
+            context.Load(view2);
+            context.ExecuteQuery();
+            XmlDocument document = new XmlDocument();
+            document.LoadXml(view.HtmlSchemaXml);
+            var setting = document.SelectSingleNode("//CalendarSettings");
+            XmlDocument viewDocument = new XmlDocument();
+
+
+            viewDocument.LoadXml(view.ListViewXml);
+            var node = viewDocument.CreateElement("CalendarSettings");
+            node.InnerXml = setting.InnerXml;
+            viewDocument.DocumentElement.InsertBefore(node, viewDocument.DocumentElement.FirstChild);
+            
+
+            var content = viewDocument.DocumentElement.InnerXml;
+            //content += setting.OuterXml;
+            view2.ListViewXml = content;
+            view2.Update();
+            context.ExecuteQuery();
+
+
+        }
         public static void Test1(ClientContext context)
         {
             var list = context.Web.Lists.GetByTitle("List2");
