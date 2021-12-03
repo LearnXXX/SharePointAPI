@@ -3,9 +3,11 @@ using CommandLine;
 using HtmlAgilityPack;
 using log4net;
 using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.DocumentSet;
 using Microsoft.SharePoint.Client.Taxonomy;
 using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
+using SharePointCSOMAPI.Authentication;
 using SharePointCSOMAPI.Tools;
 using SharePointCSOMAPI.Tools.PEQA;
 using System;
@@ -13,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -32,15 +35,40 @@ namespace SharePointCSOMAPI
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo1_xluov_onmicrosoft_com";
         //private static string siteUrl = "https://xluov-my.sharepoint.com/personal/xluo3_xluov_onmicrosoft_com";
         //private static string siteUrl = "https://812321027.sharepoint.cn/sites/QA3";
-        //private static string siteUrl = "https://812321027.sharepoint.cn/";
+        //private static string siteUrl = "https://m365x522548.sharepoint.com/sites/ADO-223476";
         //private static string siteUrl = "https://m365x522548.sharepoint.com/sites/Test1";
-        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test6";
+        //private static string siteUrl = "https://m365x522548.sharepoint.com/sites/Test1";
+        //private static string siteUrl = "https://avejpdemo.sharepoint.com/sites/XluoTest2";
+        //private static string siteUrl = "https://avejpdemo.sharepoint.com/sites/XluoTest";
+        //private static string siteUrl = "https://avejpdemo.sharepoint.com/sites/MSComm2";
+        //private static string siteUrl = "https://m365x671768.sharepoint.com/sites/ayi_classic02";
+        private static string siteUrl = "https://xluov.sharepoint.com/sites/Test3";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test5";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Janpanese";
         //private static string siteUrl = "https://xluov.sharepoint.com/sites/Test1/GermanLanguage/";
 
         private static TokenHelper tokenHelper = new TokenHelper();
 
+        private static void UpgradeSecurityProtocols()
+        {
+            if (Enum.IsDefined(typeof(System.Net.SecurityProtocolType), 12288))
+            {
+                System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)(12288);//tls1.3
+            }
+
+            if (Enum.IsDefined(typeof(System.Net.SecurityProtocolType), 3072))
+            {
+                System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)(3072);
+
+                System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)(192);
+                System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)(48);
+                System.Net.ServicePointManager.SecurityProtocol |= (System.Net.SecurityProtocolType)(768);
+            }
+        }
+        static Program()
+        {
+            UpgradeSecurityProtocols();
+        }
         private static void ArgTest(int number)
         {
             Console.WriteLine("Number: {0}", number);
@@ -103,12 +131,158 @@ namespace SharePointCSOMAPI
                 index += currentIds.Count();
             }
         }
-       
+        private static void TTTS<T>()
+        {
+            if (object.Equals(null, default(T)))
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private static void ExceptionTest()
+        {
+            try
+            {
+                throw new Exception();
+                System.IO.File.Open("C:\aaaa.txt", FileMode.Open);
+            }
+            catch
+            { }
+        }
+
+        public static bool DDS()
+        {
+            Console.WriteLine("TTTT");
+            return false;
+        }
+        private static void TTTSSS()
+        {
+            var stream = System.IO.File.OpenRead(@"C:\Users\xluo\Desktop\NintexFormsRequest.saz");
+            for (int i = 0; i <= 100 * 100 * 10; i++)
+            {
+                var dddd = new byte[100 * 1024];
+                stream.Read(dddd, 0, dddd.Length);
+                stream.Position = 0;
+            }
+        }
         static void Main(string[] args)
         {
+            Workflow.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            MSALTest.Test();
+
+            const string SOSSession = "SOSSession";
+            const string Macro = "Macro";
+            const string ChannelProgram = "ChannelProgram";
+            const string ChannelProgramLevel = "ChannelProgramLevel";
+            List<string> objectName = new List<string>() { SOSSession, Macro, ChannelProgram, ChannelProgramLevel, };
+            if (!objectName.Exists(name => string.Equals(ChannelProgramLevel.ToLower(), name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+            //var url = "https://m365x202968.sharepoint.com/sites/Dave01/Test123/Shared Documents/abc%23123/testsad_2";
+            var url = "https://m365x202968.sharepoint.com/sites/Dave01/Test123/Shared Documents/abc#123/testsad_2";
+            var encodeUrl = System.Web.HttpUtility.UrlEncode(url);
+            var resourceUrl = ResourcePath.FromDecodedUrl(url);
+
+            var ssdfsdfds = new Uri(url, true);
+            var sbss = new StringBuilder();
+            using (var streamss = new StreamReader(@"C:\Users\xluo\Desktop\ids.txt"))
+            {
+                while (!streamss.EndOfStream)
+                {
+                    var line = streamss.ReadLine();
+                    sbss.AppendFormat("'{0}',", line);
+                }
+                var r = sbss.ToString();
+            }
+            Workflow.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            TTTSSS();
+            MemoryStream sssss = new MemoryStream();
+            var ddfsf = Encoding.UTF8.GetBytes("12");
+            sssss.Write(ddfsf, 0, ddfsf.Length);
+            sssss.Position = 1;
+            MemoryStream dddd = new MemoryStream();
+            sssss.CopyTo(dddd);
+            sssss.Position = 1;
+            dddd.Position = 0;
+            sssss.CopyTo(dddd, 1);
+            dddd.SetLength(0);
+            sssss.SetLength(1);
+            //System.Net.WebRequest.DefaultWebProxy = new System.Net.WebProxy("127.0.0.1", 8888);
+            SiteLevel.SiteChangeTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            int countff = 189;
+            var value = (int)(countff * 0.1);
+            Role.Test(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            ViewLevel.CalendarViewTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            WebLevel.FeatureTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            var count = Directory.GetFiles(@"C:\Users\xluo\Desktop\New folder").Length;
+            var vvvv = true | DDS();
+            Workflow.WFSVCListTest(tokenHelper.GetClientContextForServiceAccount(siteUrl, SPUsers.UserName, SPUsers.Password));
+            //var currentCulture = Thread.CurrentThread.CurrentCulture;
+            //var cu = new CultureInfo(1031);
+            //var ddsfsdfs = DateTime.TryParse(d, cu.DateTimeFormat, System.Globalization.DateTimeStyles.None, out DateTime ddd);
+            ////var  ddsfsdfs = DateTime.TryParse(d, new System.Globalization.CultureInfo("de-de", true).DateTimeFormat,System.Globalization.DateTimeStyles.None, out DateTime ddd);
+            var recordIds = new List<string>();
+            using (var reader = new StreamReader(@"C:\Users\xluo\Desktop\Account1.csv"))
+            {
+                var firstLine = reader.ReadLine();//first line is column name
+
+                while (!reader.EndOfStream)
+                {
+                    var temp = reader.ReadLine();
+                    if (!string.IsNullOrEmpty(temp))
+                    {
+                        var recordId = temp.Trim().Split(',')[0].Trim('"');
+                        if (!string.IsNullOrEmpty(recordId))
+                        {
+                            recordIds.Add(recordId);
+                        }
+                        if (recordIds.Count == 15000)
+                        {
+                            StringBuilder aaasss = new StringBuilder();
+                            string tempStr = string.Empty;
+                            try
+                            {
+                                if (recordIds.Count == 0)
+                                {
+                                    tempStr = "''";
+                                }
+                                else
+                                {
+                                    foreach (string id in recordIds)
+                                    {
+                                        aaasss.Append("'" + id + "'");
+                                        aaasss.Append(",");
+                                    }
+                                    tempStr = aaasss.ToString().TrimEnd(',');
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error("An error occurred while generating id range sql string, error:{0}.", ex);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            using (var writer = new StreamWriter(@"C:\Users\xluo\Desktop\AccountTest.csv"))
+            {
+                writer.WriteLine("Id");
+                foreach (var rrr in recordIds)
+                {
+                    writer.WriteLine(rrr);
+                }
+            }
+
+            ZipHelper.ReadTest();
             var succeedsIds = new List<string> { "1", "2" };
             StringBuilder sb1 = new StringBuilder();
-            succeedsIds.ForEach(contactId => sb1.AppendFormat("contactId = '{0}' or ",contactId));
+            succeedsIds.ForEach(contactId => sb1.AppendFormat("contactId = '{0}' or ", contactId));
             sb1.Length -= 3;
             var dddssds = sb1.ToString();
             List<dynamic> datas = new List<dynamic>();

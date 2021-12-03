@@ -14,10 +14,10 @@
         {
             var list1 = context.Web.Lists.GetByTitle("Calendar3");
             var view = list1.Views.GetByTitle("Calendar");
-            var view2 = list1.Views.GetByTitle("TestCalendar");
             context.Load(view);
-            context.Load(view2);
             context.ExecuteQuery();
+            var view2 = list1.Views.GetByTitle("TestCalendar");
+            context.Load(view2);
             XmlDocument document = new XmlDocument();
             document.LoadXml(view.HtmlSchemaXml);
             var setting = document.SelectSingleNode("//CalendarSettings");

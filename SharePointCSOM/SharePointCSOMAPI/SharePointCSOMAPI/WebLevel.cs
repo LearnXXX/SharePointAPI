@@ -9,6 +9,19 @@ namespace SharePointCSOMAPI
 {
     class WebLevel
     {
+        public static void FeatureTest(ClientContext context)
+        {
+            context.Load(context.Web.Features);
+            context.ExecuteQuery();
+            foreach (var feature in context.Web.Features)
+            {
+                var result = context.Web.IsFeatureActive(feature.DefinitionId);
+                if (!result)
+                {
+
+                }
+            }
+        }
         public static bool CheckListExist(ClientContext context, string listUrl)
         {
             var file = context.Web.GetFileByServerRelativePath(ResourcePath.FromDecodedUrl("/sites/Test5/Shared Documents/20200611142343.txt"));

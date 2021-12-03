@@ -9,7 +9,32 @@ namespace SharePointCSOMAPI
 {
     class SiteLevel
     {
+        public static void SiteChangeTest(ClientContext context)
+        {
+            context.ExecutingWebRequest+=delegate (object sender, WebRequestEventArgs e)
+            {
+                e.WebRequestExecutor.WebRequest.Headers.Add("x-RecycleBinAware", "True");
+            };
+            context.Load(context.Site);
+            context.Load(context.Site.RootWeb.Lists);
+            context.ExecuteQuery();
+            var siteId = context.Site.Id;
+            ChangeQuery query = new ChangeQuery(true, true);
+            ChangeToken startToken = new ChangeToken();
+            ChangeToken endToken = new ChangeToken();
+            startToken.StringValue = "1;1;" + siteId.ToString() + ";" + DateTime.UtcNow.AddDays(-1).Ticks.ToString() + ";-1";
+            endToken.StringValue = "1;1;" + siteId.ToString() + ";" + DateTime.UtcNow.Ticks.ToString() + ";-1";
+            query.ChangeTokenStart = startToken;
+            query.ChangeTokenEnd = endToken;
+            ChangeCollection changedCollection = context.Site.GetChanges(query);
+            context.Load(changedCollection);
+            context.ExecuteQuery();
+            foreach (Change changeObject in changedCollection)
+            {
 
+            }
+
+        }
         public static void LoadSiteProperties(ClientContext context)
         {
             context.Load(context.Site);

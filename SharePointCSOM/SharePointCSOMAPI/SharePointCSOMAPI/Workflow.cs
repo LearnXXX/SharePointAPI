@@ -3,6 +3,7 @@ using Microsoft.SharePoint.Client.WorkflowServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,29 +13,46 @@ namespace SharePointCSOMAPI
     {
         public static void Test(ClientContext context)
         {
-            var workflowServiceManager = new WorkflowServicesManager(context, context.Web);
-            var workflowDeploymentService = workflowServiceManager.GetWorkflowDeploymentService();
-            var workflowSubscriptionService = workflowServiceManager.GetWorkflowSubscriptionService();
-            var subscriptions = workflowSubscriptionService.EnumerateSubscriptions();
-            context.Load(workflowDeploymentService);
-            context.Load(workflowSubscriptionService);
-            context.Load(subscriptions);
-            context.ExecuteQuery();
-            var subscription = subscriptions.First(temp => temp.Name == "7777");
-            var workflowDefination = workflowDeploymentService.GetDefinition(subscription.Id);
-            context.Load(workflowDefination);
-            context.ExecuteQuery();
-
-            var folderUrl = workflowDefination.Properties["Definition.Path"];
-            var folder = context.Web.GetFolderByServerRelativeUrl(folderUrl);
-            context.Load(folder);
-            context.Load(folder.Files);
-            context.ExecuteQuery();
-            foreach (var file in folder.Files)
+            try
             {
-                context.Load(file.Properties);
-                context.Load(file.ListItemAllFields);
                 context.ExecuteQuery();
+                var guid = new Guid("c72aedd7-4f04-4eb9-ac72-5e3d420804b4");
+                var formFile = context.Web.GetFileByServerRelativeUrl($"/sites/ayi_classic02/NintexFormXml/{guid.ToString()}/a923346a91b3b8ccc5f7aca79b8093388f0ab168d87ac906607754d1549f96f6.xml");
+                context.Load(formFile);
+                context.ExecuteQuery();
+                var workflowServiceManager = new WorkflowServicesManager(context, context.Web);
+                var workflowDeploymentService = workflowServiceManager.GetWorkflowDeploymentService();
+                var workflowSubscriptionService = workflowServiceManager.GetWorkflowSubscriptionService();
+                var subscriptions = workflowSubscriptionService.EnumerateSubscriptions();
+                context.Load(workflowDeploymentService);
+                context.Load(workflowSubscriptionService);
+                context.Load(subscriptions);
+                context.ExecuteQuery();
+                var subscription = subscriptions.First(temp => temp.Name == "7777");
+                var workflowDefination = workflowDeploymentService.GetDefinition(subscription.Id);
+                context.Load(workflowDefination);
+                context.ExecuteQuery();
+
+                var folderUrl = workflowDefination.Properties["Definition.Path"];
+                var folder = context.Web.GetFolderByServerRelativeUrl(folderUrl);
+                context.Load(folder);
+                context.Load(folder.Files);
+                context.ExecuteQuery();
+                foreach (var file in folder.Files)
+                {
+                    context.Load(file.Properties);
+                    context.Load(file.ListItemAllFields);
+                    context.ExecuteQuery();
+                }
+            }
+            catch (WebException ex)
+            {
+                var response = ex.Response as HttpWebResponse;
+                // Check if request was throttled - http status code 429
+                // Check is request failed due to server unavailable - http status code 503
+                var wrapper = (ClientRequestWrapper)ex.Data["ClientRequest"];
+                context.RetryQuery(wrapper.Value);
+
             }
 
         }
@@ -53,6 +71,7 @@ namespace SharePointCSOMAPI
             var deploymentService = workflowServicesManager.GetWorkflowDeploymentService();
             var workflowDefinitions = deploymentService.EnumerateDefinitions(false);
 
+            var instance = workflowServicesManager.GetWorkflowInstanceService();
             //only load what we need
             context.Load(workflowDefinitions, a => a.Include(
                                                     b => b.Description,

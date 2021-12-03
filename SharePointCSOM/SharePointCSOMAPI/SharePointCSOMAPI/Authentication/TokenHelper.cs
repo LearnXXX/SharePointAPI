@@ -22,6 +22,7 @@ namespace SharePointCSOMAPI
         {
             var context = new ClientContext(siteUrl);
             context.Credentials = new SharePointOnlineCredentials(userName, GetPassword(password));
+            //context.FormDigestHandlingEnabled = true;
             return context;
         }
 

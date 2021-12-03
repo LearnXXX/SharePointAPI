@@ -11,6 +11,19 @@ namespace SharePointCSOMAPI.Tools
     public class ZipHelper
     {
 
+        public static void ReadTest()
+        {
+            string filePath = @"C:\Users\xluo\Desktop\1111.zip";
+            var extension = Path.GetExtension(filePath);
+            var file = new FileInfo(filePath);
+            using (var zip = System.IO.Compression.ZipFile.OpenRead(filePath))
+            {
+                using (var reader = new StreamReader(zip.Entries[0].Open()))
+                {
+                    var line = reader.ReadLine();
+                }
+            }
+        }
         public static void Test()
         {
 
